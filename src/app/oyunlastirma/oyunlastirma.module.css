@@ -1,0 +1,378 @@
+.container {
+  padding-top: 80px;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.heroSection {
+  background: linear-gradient(135deg, #4a3d8f, #74c0fc);
+  padding: 5rem 2rem;
+  text-align: center;
+  color: white;
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.contentSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.introSection, .elementsSection, .benefitsSection, .testimonialsSection {
+  margin-bottom: 4rem;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  color: #1a1a2e;
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.sectionTitle:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(to right, #4dabf7, #74c0fc);
+}
+
+.introGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.introText p {
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+}
+
+.roundedImage {
+  border-radius: 10px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  height: auto;
+}
+
+.elementsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.elementCard {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border-top: 4px solid #4dabf7;
+}
+
+.elementCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.elementIcon {
+  font-size: 2.5rem;
+  color: #4dabf7;
+  margin-bottom: 1.5rem;
+}
+
+.elementCard h3 {
+  font-size: 1.3rem;
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.elementCard p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.benefitsList {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.benefitItem {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.benefitItem:hover {
+  transform: translateX(10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.benefitNumber {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #e0f7fe;
+  min-width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.benefitContent h3 {
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.benefitContent p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.testimonialsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.testimonialCard {
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.testimonialCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.testimonialContent {
+  padding: 2rem;
+  position: relative;
+}
+
+.testimonialContent:before {
+  content: '"';
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 5rem;
+  color: #e0f7fe;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+.testimonialContent p {
+  color: #555;
+  line-height: 1.7;
+  font-style: italic;
+  position: relative;
+  z-index: 1;
+}
+
+.testimonialAuthor {
+  padding: 1.5rem 2rem;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.testimonialImage {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.testimonialAuthor h4 {
+  margin: 0;
+  color: #1a1a2e;
+  font-size: 1.1rem;
+}
+
+.testimonialAuthor p {
+  margin: 0.3rem 0 0;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.researchSection {
+  background-color: #f0f9ff;
+  border-radius: 10px;
+  padding: 3rem;
+  margin-bottom: 4rem;
+}
+
+.researchContent {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.researchIcon {
+  font-size: 3rem;
+  color: #4dabf7;
+  margin-bottom: 1.5rem;
+}
+
+.researchContent h2 {
+  color: #1a1a2e;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.researchContent p {
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.researchLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4dabf7;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  border: 1px solid #4dabf7;
+  transition: all 0.3s ease;
+}
+
+.researchLink:hover {
+  background-color: #4dabf7;
+  color: white;
+}
+
+.researchLinkIcon {
+  font-size: 0.9rem;
+}
+
+.ctaSection {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.ctaSection h2 {
+  font-size: 2rem;
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.ctaSection p {
+  color: #555;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.ctaButtons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.primaryButton, .secondaryButton {
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.primaryButton {
+  background-color: #4dabf7;
+  color: white;
+}
+
+.primaryButton:hover {
+  background-color: #3c99e9;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(77, 171, 247, 0.3);
+}
+
+.secondaryButton {
+  background-color: transparent;
+  border: 1px solid #4dabf7;
+  color: #4dabf7;
+}
+
+.secondaryButton:hover {
+  background-color: rgba(77, 171, 247, 0.1);
+  transform: translateY(-3px);
+}
+
+@media (max-width: 992px) {
+  .introGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .benefitItem {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .benefitNumber {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.2rem;
+  }
+  
+  .heroSection {
+    padding: 3rem 1rem;
+  }
+  
+  .elementsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ctaButtons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .researchSection {
+    padding: 2rem 1rem;
+  }
+  
+  .testimonialsList {
+    grid-template-columns: 1fr;
+  }
+}

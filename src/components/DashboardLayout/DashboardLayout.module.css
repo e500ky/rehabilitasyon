@@ -1,0 +1,31 @@
+.dashboardLayout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  margin-left: 260px; /* Sabit sidebar genişliğine göre */
+  transition: margin-left 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.main {
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+@media (max-width: 992px) {
+  .content {
+    margin-left: 0;
+  }
+}

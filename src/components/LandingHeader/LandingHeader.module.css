@@ -1,0 +1,191 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: transparent;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  padding: 1rem 0;
+}
+
+.scrolled {
+  background-color: white;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  padding: 0.7rem 0;
+}
+
+.headerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logoContainer {
+  z-index: 1001;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navLinks {
+  display: flex;
+  list-style: none;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navLink {
+  color: #1e293b;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+.scrolled .navLink {
+  color: #1e293b;
+}
+
+.navLink:hover {
+  color: #4c9aff;
+}
+
+.navLink:hover::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background-color: #4c9aff;
+}
+
+.authLinks {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.loginButton {
+  color: #1e293b;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 0.5rem 0.8rem;
+}
+
+.scrolled .loginButton {
+  color: #1e293b;
+}
+
+.loginButton:hover {
+  color: #4c9aff;
+}
+
+.signupButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #4c9aff;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.signupButton:hover {
+  background-color: #2b74d9;
+  transform: translateY(-2px);
+}
+
+.arrowIcon {
+  font-size: 0.9rem;
+}
+
+.dashboardButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #2b3b54;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.dashboardButton:hover {
+  background-color: #1a2638;
+  transform: translateY(-2px);
+}
+
+.userIcon {
+  font-size: 1.1rem;
+}
+
+.mobileMenuButton {
+  display: none;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: #1e293b;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+/* Mobil tasarım */
+@media (max-width: 992px) {
+  .mobileMenuButton {
+    display: block;
+  }
+
+  .nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 400px;
+    height: 100vh;
+    background-color: white;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    gap: 3rem;
+  }
+
+  .mobileMenuOpen {
+    right: 0;
+  }
+
+  .navLinks {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .authLinks {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .loginButton, .signupButton, .dashboardButton {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 0.8rem;
+  }
+}

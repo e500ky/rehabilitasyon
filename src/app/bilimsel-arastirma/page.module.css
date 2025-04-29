@@ -1,0 +1,277 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.heroSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4rem;
+  gap: 2rem;
+}
+
+.heroContent {
+  flex: 1;
+}
+
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #2b3b54;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #4a5568;
+}
+
+.heroImage {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image {
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  height: auto;
+}
+
+.section {
+  margin-bottom: 4rem;
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  color: #2b3b54;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  color: #4c9aff;
+}
+
+.sectionText {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #4a5568;
+  margin-bottom: 2rem;
+}
+
+.researchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.researchCard {
+  background-color: #f8fafc;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.researchCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cardTitle {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #2b3b54;
+}
+
+.cardText {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+}
+
+.downloadLink {
+  display: inline-flex;
+  align-items: center;
+  color: #4c9aff;
+  font-weight: 500;
+  text-decoration: none;
+  gap: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.downloadLink:hover {
+  color: #2b74d9;
+  text-decoration: underline;
+}
+
+.downloadIcon {
+  font-size: 1rem;
+}
+
+.caseStudyContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.caseStudy {
+  background-color: #f0f9ff;
+  padding: 2rem;
+  border-radius: 10px;
+  border-left: 4px solid #4c9aff;
+}
+
+.caseStudy h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #2b3b54;
+}
+
+.caseStudy p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4a5568;
+}
+
+.statsSection {
+  background-color: #f8fafc;
+  padding: 3rem;
+  border-radius: 10px;
+  margin-bottom: 4rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.statCard {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.statValue {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #4c9aff;
+  margin-bottom: 0.5rem;
+}
+
+.statLabel {
+  font-size: 1rem;
+  color: #4a5568;
+}
+
+.partnerLogos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.partnerLogo {
+  height: 80px;
+  width: 200px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #888;
+  font-weight: 500;
+}
+
+.ctaSection {
+  background-color: #2b3b54;
+  padding: 3rem;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+}
+
+.ctaSection h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.ctaSection p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #4c9aff;
+  color: white;
+  text-decoration: none;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.ctaButton:hover {
+  background-color: #2b74d9;
+}
+
+.buttonIcon {
+  font-size: 1rem;
+}
+
+/* Mobil Cihazlar İçin Responsive Tasarım */
+@media (max-width: 768px) {
+  .heroSection {
+    flex-direction: column;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .researchGrid, .caseStudyContainer {
+    grid-template-columns: 1fr;
+  }
+  
+  .ctaSection {
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+}

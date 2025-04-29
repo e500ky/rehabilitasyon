@@ -1,0 +1,62 @@
+.recaptchaContainer {
+  margin: 1.5rem 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  min-height: 78px;
+}
+
+.recaptchaWrapper {
+  min-width: 302px;
+  min-height: 78px;
+}
+
+.loadingIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  max-width: 302px;
+  border: 1px dashed #ced4da;
+}
+
+.recaptchaError {
+  padding: 1rem;
+  background-color: #fff3f3;
+  border-left: 4px solid #ff4d4f;
+  color: #cf1322;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  width: 100%;
+  max-width: 500px;
+}
+
+.recaptchaError p:first-child {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.recaptchaError p:last-child {
+  color: #6c757d;
+  font-size: 0.85rem;
+}
+
+.devModeNotice {
+  padding: 0.8rem;
+  background-color: #f0f9ff;
+  border: 1px dashed #91caff;
+  color: #1677ff;
+  border-radius: 4px;
+  text-align: center;
+  margin: 1rem 0;
+  width: 100%;
+  max-width: 302px;
+}

@@ -1,0 +1,339 @@
+.container {
+  padding-top: 80px;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.heroSection {
+  background: linear-gradient(to right, #e0f7fe, #c5e8ff);
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+.contentSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.overviewSection, 
+.keyFindingsSection, 
+.publicationsSection, 
+.partnersSection,
+.futureResearchSection {
+  margin-bottom: 4rem;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  color: #1a1a2e;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.titleIcon {
+  color: #4dabf7;
+}
+
+.overviewGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.overviewText p {
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+}
+
+.roundedImage {
+  border-radius: 10px;
+  width: 100%;
+  height: auto;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.findingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.findingCard {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.findingCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.findingIcon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #e0f7fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #4dabf7;
+  margin-bottom: 1.5rem;
+}
+
+.findingCard h3 {
+  font-size: 1.3rem;
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.findingCard p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.publicationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.publicationItem {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.publicationMeta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.publicationYear {
+  background-color: #4dabf7;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.publicationJournal {
+  color: #555;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+.publicationTitle {
+  color: #1a1a2e;
+  margin-bottom: 0.8rem;
+  font-size: 1.4rem;
+}
+
+.publicationAuthors {
+  color: #666;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.publicationAbstract {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.publicationAbstract h4 {
+  color: #1a1a2e;
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+}
+
+.publicationAbstract p {
+  color: #555;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.publicationLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4dabf7;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border: 1px solid #4dabf7;
+  border-radius: 20px;
+}
+
+.publicationLink:hover {
+  background-color: #4dabf7;
+  color: white;
+}
+
+.downloadIcon {
+  font-size: 1rem;
+}
+
+.partnersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.partnerCard {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.partnerLogo {
+  height: auto;
+  width: 200px;
+  margin-bottom: 1.5rem;
+  object-fit: contain;
+}
+
+.partnerCard h3 {
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.partnerCard p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.futureResearchContent {
+  background-color: #f0f9ff;
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+.futureResearchList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.futureResearchList li {
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.futureResearchList h3 {
+  color: #1a1a2e;
+  margin-bottom: 0.8rem;
+  font-size: 1.3rem;
+}
+
+.futureResearchList p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.ctaSection {
+  text-align: center;
+  padding: 3rem;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+}
+
+.ctaContent h2 {
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.ctaContent p {
+  color: #555;
+  margin-bottom: 2rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ctaButton {
+  display: inline-block;
+  background-color: #4dabf7;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.ctaButton:hover {
+  background-color: #3c99e9;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(77, 171, 247, 0.3);
+}
+
+@media (max-width: 992px) {
+  .overviewGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+  
+  .heroSection {
+    padding: 3rem 1rem;
+  }
+  
+  .findingsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .partnersGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .publicationTitle {
+    font-size: 1.2rem;
+  }
+}

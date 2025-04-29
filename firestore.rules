@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // TEST İÇİN TÜM KURALLARI AÇIK YAPIYORUZ - ÜRETİM ORTAMINDA KULLANMAYIN!
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

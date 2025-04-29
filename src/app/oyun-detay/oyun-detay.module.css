@@ -1,0 +1,344 @@
+.container {
+  padding-top: 80px;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.heroSection {
+  background: linear-gradient(to right, #e0f7fe, #c5e8ff);
+  padding: 4rem 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.heroContent {
+  flex: 1;
+  min-width: 300px;
+}
+
+.heroImageContainer {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  justify-content: center;
+}
+
+.heroImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 1.5rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.contentSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.overviewSection, 
+.featuresSection, 
+.gameMechanicsSection, 
+.therapeuticBenefitsSection {
+  margin-bottom: 4rem;
+}
+
+.sectionIcon {
+  font-size: 2.5rem;
+  color: #4dabf7;
+  margin-bottom: 1rem;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  color: #1a1a2e;
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.sectionTitle:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 50%;
+  height: 3px;
+  background: linear-gradient(to right, #4dabf7, transparent);
+}
+
+.overviewContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
+}
+
+.textContent {
+  flex: 1;
+  min-width: 300px;
+}
+
+.textContent p {
+  margin-bottom: 1.5rem;
+  color: #555;
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.videoContainer {
+  flex: 1;
+  min-width: 300px;
+}
+
+.videoWrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.videoWrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.featureCard {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.featureIcon {
+  width: 60px;
+  height: 60px;
+  background-color: #e0f7fe;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #4dabf7;
+}
+
+.featureCard h3 {
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.featureCard p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.mechanicsContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
+  align-items: center;
+}
+
+.mechanicsImage {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  justify-content: center;
+}
+
+.roundedImage {
+  border-radius: 10px;
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.mechanicsList {
+  flex: 1;
+  min-width: 300px;
+}
+
+.mechanicItem {
+  margin-bottom: 2rem;
+}
+
+.mechanicItem h3 {
+  color: #1a1a2e;
+  margin-bottom: 0.8rem;
+  font-size: 1.3rem;
+}
+
+.mechanicItem p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.benefitsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  gap: 2rem;
+}
+
+.benefitItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.benefitIcon {
+  width: 50px;
+  height: 50px;
+  background-color: #e0f7fe;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: #4dabf7;
+  flex-shrink: 0;
+}
+
+.benefitItem h3 {
+  color: #1a1a2e;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+}
+
+.benefitItem p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.ctaSection {
+  background-color: #f0f9ff;
+  padding: 3rem;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.ctaContent h2 {
+  font-size: 1.8rem;
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.ctaContent p {
+  color: #555;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.primaryButton, .secondaryButton {
+  padding: 0.8rem 2rem;
+  border-radius: 30px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.primaryButton {
+  background-color: #4dabf7;
+  color: white;
+  text-decoration: none;
+}
+
+.primaryButton:hover {
+  background-color: #3c99e9;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(77, 171, 247, 0.3);
+}
+
+.secondaryButton {
+  background-color: transparent;
+  border: 1px solid #4dabf7;
+  color: #4dabf7;
+  text-decoration: none;
+}
+
+.secondaryButton:hover {
+  background-color: rgba(77, 171, 247, 0.1);
+  transform: translateY(-3px);
+}
+
+@media (max-width: 992px) {
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .heroSection {
+    flex-direction: column;
+  }
+  
+  .benefitsList {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+  
+  .mechanicsContent, .overviewContent {
+    flex-direction: column;
+  }
+  
+  .ctaButtons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .primaryButton, .secondaryButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

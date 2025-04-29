@@ -1,0 +1,365 @@
+.dashboardContainer {
+  width: 100%;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.welcomeSection {
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #e0f7fe, #c5e8ff);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  color: #1a1a2e;
+}
+
+.welcomeTitle {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.welcomeText {
+  font-size: 1.1rem;
+  color: #1a1a2e;
+  line-height: 1.6;
+}
+
+.statsSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  gap: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.statIcon {
+  width: 56px;
+  height: 56px;
+  background-color: rgba(77, 171, 247, 0.15);
+  color: #4dabf7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 1.5rem;
+}
+
+.statInfo h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.statValue {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.statSubtext {
+  font-size: 0.85rem;
+  color: #777;
+  margin: 0;
+}
+
+.chartSection {
+  margin-bottom: 2rem;
+}
+
+.chartCard {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.chartTitle {
+  font-size: 1.2rem;
+  color: #1a1a2e;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.chartSubtitle {
+  font-size: 0.9rem;
+  color: #777;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.chartContainer {
+  height: 300px;
+}
+
+.infoSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.infoCard {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.infoTitle {
+  font-size: 1.2rem;
+  color: #1a1a2e;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.infoSubtext {
+  font-size: 0.9rem;
+  color: #777;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.appointmentsList, .exercisesList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+
+.appointmentItem {
+  display: flex;
+  margin-bottom: 1.2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.appointmentItem:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.appointmentDate {
+  background-color: rgba(77, 171, 247, 0.15);
+  padding: 1rem;
+  border-radius: 8px;
+  min-width: 60px;
+  text-align: center;
+  font-weight: 600;
+  margin-right: 1rem;
+  color: #4dabf7;
+}
+
+.appointmentInfo h3 {
+  margin: 0 0 0.3rem 0;
+  font-size: 1rem;
+  color: #1a1a2e;
+}
+
+.appointmentInfo p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.exerciseItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+.exerciseItem:hover {
+  background-color: #e9f5ff;
+}
+
+.exerciseItem:last-child {
+  margin-bottom: 0;
+}
+
+.exerciseCheckbox {
+  margin-right: 1rem;
+  width: 18px;
+  height: 18px;
+  accent-color: #4dabf7;
+}
+
+.exerciseLabel {
+  flex: 1;
+  font-size: 1rem;
+  color: #1a1a2e;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.exerciseName {
+  max-width: 70%;
+}
+
+.exerciseTime {
+  color: #777;
+  font-size: 0.85rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.3rem 0.6rem;
+  border-radius: 20px;
+}
+
+.playButton {
+  background: none;
+  border: none;
+  color: #4dabf7;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-left: 1rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.playButton:hover {
+  background-color: rgba(77, 171, 247, 0.1);
+  color: #4dabf7;
+}
+
+.moreButton {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: transparent;
+  border: 1px solid #4dabf7;
+  color: #4dabf7;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.moreButton:hover {
+  background-color: rgba(77, 171, 247, 0.1);
+}
+
+.actionSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.actionCard {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.actionCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+}
+
+.actionIcon {
+  font-size: 2.5rem;
+  color: #4dabf7;
+  margin-bottom: 1rem;
+}
+
+.actionCard h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  color: #1a1a2e;
+}
+
+.actionCard p {
+  color: #777;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.actionButton {
+  background: linear-gradient(135deg, #4dabf7, #74c0fc);
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.actionButton:hover {
+  box-shadow: 0 5px 15px rgba(77, 171, 247, 0.4);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 992px) {
+  .welcomeSection {
+    padding: 1.5rem;
+  }
+  
+  .welcomeTitle {
+    font-size: 1.5rem;
+  }
+  
+  .infoSection {
+    grid-template-columns: 1fr;
+  }
+}
+
+.emptyMessage {
+  padding: 1.5rem;
+  text-align: center;
+  color: #777;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.errorMessage {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #fff3f3;
+  border-left: 4px solid #e03131;
+  border-radius: 6px;
+}
+
+.errorIcon {
+  color: #e03131;
+  font-size: 1.2rem;
+  margin-top: 0.2rem;
+}
+
+.errorNote {
+  font-size: 0.9rem;
+  color: #777;
+  margin-top: 0.5rem;
+}

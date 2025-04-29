@@ -7,14 +7,14 @@ import { useAuth } from '@/context/AuthContext';
 import firestoreService from '@/lib/services/firestoreService';
 import { ProgressDataPoint } from '@/types/user';
 import {
-  faCalendarAlt,
-  faCalendarPlus,
-  faExclamationTriangle,
-  faSearch,
-  faSyncAlt,
-  faTimes,
-  faUser,
-  faUserPlus
+    faCalendarPlus,
+    faExclamationTriangle,
+    faSearch,
+    faSyncAlt,
+    faTimes,
+    faTrashAlt,
+    faUser,
+    faUserPlus
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -193,6 +193,32 @@ export default function PatientsPage() {
     setSelectedPatient(null);
   };
 
+  // Hasta-bakıcı ilişkisini silme işlemi
+  const handleRemovePatient = async (patient: PatientData) => {
+    if (!patient.relationId) {
+      alert("Bu hasta için ilişki bilgisi bulunamadı.");
+      return;
+    }
+    
+    const confirmDelete = window.confirm(`${patient.name} adlı hastayı listenizden kaldırmak istediğinizden emin misiniz?`);
+    if (!confirmDelete) return;
+
+    setIsLoading(true);
+    try {
+      await firestoreService.deleteCaregiverPatientRelation(patient.relationId);
+      
+      // Hasta listesinden de kaldır
+      setPatients(prev => prev.filter(p => p.id !== patient.id));
+      setFilteredPatients(prev => prev.filter(p => p.id !== patient.id));
+    
+    } catch (err) {
+      console.error("Hasta ilişkisi silinirken hata oluştu:", err);
+      alert("Hasta kaldırılırken bir sorun oluştu.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Hasta detay modalı içeriği
   const renderPatientDetailModal = () => {
     if (!selectedPatient) return null;
@@ -230,10 +256,8 @@ export default function PatientsPage() {
               {selectedPatient.stats && (
                 <>
                   <div className={styles.statItem}>
-                    <div className={styles.statInfo}>
                       <div className={styles.statTitle}>Toplanan Elmalar</div>
-                      <div className={styles.statValue}>{selectedPatient.stats.collectedApples || 0}</div>
-                    </div>
+                      <div className={styles.statValue}>{selectedPatient.stats.totalCollectedApples || 0}</div>
                   </div>
                   
                   <div className={styles.statItem}>
@@ -247,7 +271,7 @@ export default function PatientsPage() {
                   <div className={styles.statItem}>
                     <div className={styles.statTitle}>Maksimum Seviye</div>
                     <div className={styles.statValue}>
-                      {selectedPatient.stats.currentLevel || 1}
+                      {selectedPatient.stats.maxLevel || 1}
                     </div>
                   </div>
 
@@ -349,18 +373,21 @@ export default function PatientsPage() {
                   <h3>{patient.name}</h3>
                   <p>{patient.email}</p>
                 </div>
-                <div className={styles.patientStats}>
-                  <div className={styles.statItem}>
-                    <FontAwesomeIcon icon={faCalendarAlt} />
-                    <span>{patient.upcomingAppointments || 0} Randevu</span>
-                  </div>
+                <div className={styles.patientActions}>
+                  <button 
+                    className={styles.viewButton} 
+                    onClick={() => handleViewPatient(patient)}
+                  >
+                    Detayları Görüntüle
+                  </button>
+                  <button 
+                    className={styles.removeButton} 
+                    onClick={() => handleRemovePatient(patient)}
+                    title="Hastayı listenizden kaldırın"
+                  >
+                    <FontAwesomeIcon icon={faTrashAlt} /> Kaldır
+                  </button>
                 </div>
-                <button 
-                  className={styles.viewButton} 
-                  onClick={() => handleViewPatient(patient)}
-                >
-                  Detayları Görüntüle
-                </button>
               </div>
             ))}
           </div>

@@ -24,12 +24,7 @@ interface PatientDashboardProps {
 
 export default function PatientDashboard({ userProfile }: PatientDashboardProps) {
   const { currentUser } = useAuth();
-  const [userStats, setUserStats] = useState<UserStats>({
-    sessionsCount: 0,
-    collectedApples: 0,
-    progressPercentage: 0,
-    currentLevel: 1
-  });
+  const [userStats, setUserStats] = useState<UserStats>();
   const [progressData, setProgressData] = useState<ProgressDataPoint[]>([]);
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -96,7 +91,7 @@ export default function PatientDashboard({ userProfile }: PatientDashboardProps)
           </div>
           <div className={styles.statInfo}>
             <h3>Tamamlanan Seanslar</h3>
-            <div className={styles.statValue}>{userStats.sessionsCount || 0}</div>
+            <div className={styles.statValue}>{userStats?.progressPercentage || 0}</div>
           </div>
         </div>
         
@@ -106,7 +101,7 @@ export default function PatientDashboard({ userProfile }: PatientDashboardProps)
           </div>
           <div className={styles.statInfo}>
             <h3>Toplanan Elmalar</h3>
-            <div className={styles.statValue}>{userStats.collectedApples || 0}</div>
+            <div className={styles.statValue}>{userStats?.totalCollectedApples || 0}</div>
           </div>
         </div>
         
@@ -126,7 +121,7 @@ export default function PatientDashboard({ userProfile }: PatientDashboardProps)
           </div>
           <div className={styles.statInfo}>
             <h3>Maksimum Seviye</h3>
-            <div className={styles.statValue}>{userStats.currentLevel || 1}</div>
+            <div className={styles.statValue}>{userStats?.maxLevel || 1}</div>
             <div className={styles.statSubtext}>(10 seviye arasında)</div>
           </div>
         </div>

@@ -8,6 +8,7 @@ import {
   getDocs,
   limit,
   onSnapshot,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
@@ -56,8 +57,8 @@ const firestoreService = {
         const statsRef = doc(db, 'stats', uid);
         await setDoc(statsRef, {
           sessionsCount: 0,
-          collectedApples: 0,
-          currentLevel: 1,
+          totalCollectedApples: 0,
+          maxLevel: 1,
           updatedAt: new Date().toISOString()
         });
       });
@@ -337,7 +338,7 @@ const firestoreService = {
       // HATA AYIKLAMA: Firestore bağlantısını kontrol et
       try {
         const testColRef = collection(db, collectionName);
-        const testDoc = await getDocs(query(testColRef, limit(1)));
+        const testQuerySnapshot = await getDocs(query(testColRef, limit(1)));
         console.log(`Firestore bağlantısı test edildi. ${collectionName} koleksiyonu mevcut.`);
       } catch (testErr) {
         console.error(`Firestore bağlantı testi başarısız: ${testErr}`);
@@ -384,116 +385,137 @@ const firestoreService = {
   // Bakıcı-hasta ilişkisini silme
   deleteCaregiverPatientRelation: async (relationId: string): Promise<void> => {
     try {
+      console.log(`İlişki siliniyor: ${relationId}`);
       const relationRef = doc(db, 'caregiverPatientRelations', relationId);
-      await updateDoc(relationRef, {
-        deleted: true,
-        updatedAt: new Date().toISOString()
-      });
+      
+      // İlişkiyi tamamen sil
+      await deleteDoc(relationRef);
+      console.log(`İlişki başarıyla silindi: ${relationId}`);
     } catch (error) {
       console.error('Bakıcı-hasta ilişkisi silme hatası:', error);
       throw error;
     }
   },
 
-  // Bakıcının hastalarını getirme
-  getCaregiverPatients: async (userId: string): Promise<any[]> => {
+  // Bakıcı randevularını getir
+  getCaregiverAppointments: async (caregiverId: string): Promise<AppointmentData[]> => {
     try {
-      console.log(`Bakıcının hastaları sorgulanıyor... Bakıcı ID: ${userId}`);
-      
-      // Bakıcı-hasta ilişkilerini sorgula
-      const relationshipsRef = collection(db, 'caregiverPatientRelations');
-      
-      // İlişkileri sorgula
-      const q = query(relationshipsRef, where('caregiverId', '==', userId));
-      console.log('İlişki sorgusu oluşturuldu');
-      
-      const querySnapshot = await getDocs(q);
-      console.log(`İlişkiler sorgulandı. ${querySnapshot.size} ilişki bulundu.`);
-      
-      if (querySnapshot.empty) {
-        console.log('Hiç ilişki bulunamadı.');
-        return [];
-      }
-
-      // Hasta bilgilerini al
-      console.log('Hasta verileri alınıyor...');
-      const patients = await Promise.all(
-        querySnapshot.docs.map(async (relationDoc) => {
-          try {
-            const relationData = relationDoc.data();
-            const patientId = relationData.patientId;
-            console.log(`İlişki verisi: `, relationData);
-            
-            const patientDoc = await getDoc(doc(db, 'users', patientId));
-            if (patientDoc.exists()) {
-              const patientData = patientDoc.data();
-              console.log(`Hasta ${patientId} bilgileri alındı:`, patientData);
-              
-              return {
-                id: patientId,
-                name: patientData.displayName || 'İsimsiz Hasta',
-                email: patientData.email,
-                relationId: relationDoc.id,
-                upcomingAppointments: 0, // Default değer
-                lastAppointmentDate: undefined
-              };
-            } else {
-              console.log(`${patientId} ID'li hasta bulunamadı.`);
-            }
-            return null;
-          } catch (err) {
-            console.error('Hasta bilgisi alınırken hata:', err);
-            return null;
-          }
-        })
+      const appointmentsRef = collection(db, 'appointments');
+      const q = query(
+        appointmentsRef,
+        where('caregiverId', '==', caregiverId),
+        orderBy('createdAt', 'desc')
       );
       
-      const filteredPatients = patients.filter(p => p !== null);
-      console.log(`Sonuç: ${filteredPatients.length} hasta bulundu.`);
-      return filteredPatients;
-    } catch (error: any) {
-      console.error('Hastalar getirilirken hata oluştu:', error);
+      const querySnapshot = await getDocs(q);
+      const appointments: AppointmentData[] = [];
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        appointments.push({
+          id: doc.id,
+          ...data,
+          date: data.date instanceof Timestamp ? data.date.toDate().toISOString() : data.date
+        } as AppointmentData);
+      });
+      
+      return appointments;
+    } catch (error) {
+      console.error("Bakıcı randevularını getirirken hata oluştu:", error);
       throw error;
     }
   },
 
-  // Bakıcının randevularını getirme
-  getCaregiverAppointments: async (caregiverId: string, status?: 'pending' | 'accepted' | 'completed' | 'cancelled'): Promise<AppointmentData[]> => {
+  // Bakıcı-hasta ilişkilerini getir
+  getCaregiverPatients: async (caregiverId: string) => {
     try {
-      const appointmentsRef = collection(db, 'appointments');
+      console.log(`Bakıcının (${caregiverId}) hastalarını getirme işlemi başladı...`);
       
-      let q;
-      if (status) {
-        q = query(
-          appointmentsRef,
-          where('caregiverId', '==', caregiverId),
-          where('status', '==', status)
-        );
-      } else {
-        q = query(
-          appointmentsRef,
-          where('caregiverId', '==', caregiverId)
-        );
-      }
+      // Doğru koleksiyon adı: caregiverPatientRelations
+      const relationsRef = collection(db, 'caregiverPatientRelations');
+      const q = query(
+        relationsRef,
+        where('caregiverId', '==', caregiverId),
+        where('status', '==', 'active') // Aktif ilişkileri getir
+      );
       
       const querySnapshot = await getDocs(q);
+      console.log(`${querySnapshot.size} ilişki bulundu.`);
       
       if (querySnapshot.empty) {
+        console.log('Bakıcının hiç hasta ilişkisi bulunamadı');
         return [];
       }
       
-      const appointments = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as AppointmentData));
+      // Her bir ilişkiden hasta bilgilerini al
+      const patients = await Promise.all(querySnapshot.docs.map(async (relationDoc) => {
+        try {
+          const relationData = relationDoc.data();
+          const patientId = relationData.patientId;
+          
+          console.log(`Hasta bilgisi alınıyor: ${patientId}`);
+          
+          // Hasta profilini getir
+          const patientRef = doc(db, 'users', patientId);
+          const patientDoc = await getDoc(patientRef);
+          
+          if (patientDoc.exists()) {
+            const patientData = patientDoc.data();
+            console.log(`Hasta ${patientId} bilgileri alındı:`, patientData.displayName || 'İsimsiz Hasta');
+            
+            return {
+              id: patientId,
+              name: patientData.displayName || 'İsimsiz Hasta',
+              email: patientData.email,
+              relationId: relationDoc.id,
+              upcomingAppointments: 0,
+              lastAppointmentDate: undefined
+            };
+          } else {
+            console.log(`${patientId} ID'li hasta bulunamadı.`);
+          }
+          return null;
+        } catch (err) {
+          console.error('Hasta bilgisi alınırken hata:', err);
+          return null;
+        }
+      }));
+      
+      const filteredPatients = patients.filter(p => p !== null);
+      console.log(`Sonuç: ${filteredPatients.length} hasta bulundu.`);
+      
+      return filteredPatients;
+    } catch (error) {
+      console.error('Hastalar getirilirken hata oluştu:', error);
+      throw error;
+    }
+  },
+  
+  // Hasta randevularını getir
+  getPatientAppointments: async (patientId: string): Promise<AppointmentData[]> => {
+    try {
+      const appointmentsRef = collection(db, 'appointments');
+      const q = query(
+        appointmentsRef,
+        where('patientId', '==', patientId),
+        orderBy('createdAt', 'desc')
+      );
+      
+      const querySnapshot = await getDocs(q);
+      const appointments: AppointmentData[] = [];
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        appointments.push({
+          id: doc.id,
+          ...data,
+          date: data.date instanceof Timestamp ? data.date.toDate().toISOString() : data.date
+        } as AppointmentData);
+      });
       
       return appointments;
-    } catch (error: any) {
-      console.error('Randevular getirilirken hata oluştu:', error);
-      if (error.code === 'permission-denied') {
-        console.error('İzin hatası: Güvenlik kurallarını kontrol edin ve Firebase konsolunuzda ayarlamayı unutmayın.');
-        return []; // Hata durumunda boş dizi döndürme
-      }
+    } catch (error) {
+      console.error("Hasta randevularını getirirken hata oluştu:", error);
       throw error;
     }
   },
@@ -519,94 +541,6 @@ const firestoreService = {
     }
   },
 
-  // Email adresine göre kullanıcı arama
-  searchUsersByEmail: async (email: string, userType?: 'patient' | 'caregiver'): Promise<UserProfile[]> => {
-    try {
-      const trimmedEmail = email.trim();
-      if (!trimmedEmail) {
-        console.log("Arama sorgusu boş.");
-        return [];
-      }
-      console.log(`Firestore'da aranan email: '${trimmedEmail}', İstenen tip: ${userType || 'Belirtilmedi'}`);
-
-      const usersRef = collection(db, 'users');
-      
-      // Sadece email ile sorgu yap
-      const q = query(usersRef, where('email', '==', trimmedEmail));
-      
-      const querySnapshot = await getDocs(q);
-      console.log(`Firestore sorgu sonucu: ${querySnapshot.size} doküman bulundu.`);
-      
-      if (querySnapshot.empty) {
-        return [];
-      }
-      
-      // Tüm eşleşen kullanıcıları al
-      let users = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        console.log(`Bulunan doküman ID: ${doc.id}, Veri:`, data); // Her dokümanın verisini logla
-        return {
-          uid: doc.id,
-          ...data
-        } as UserProfile;
-      });
-      
-      console.log("Filtreleme öncesi bulunan kullanıcılar:", users);
-      
-      // Eğer userType belirtilmişse, client tarafında filtrele
-      if (userType) {
-        users = users.filter(user => {
-          console.log(`Kullanıcı ${user.uid} (${user.email}) tipi kontrol ediliyor: ${user.userType} === ${userType}`);
-          return user.userType === userType;
-        });
-        console.log(`'${userType}' tipine göre filtrelenmiş kullanıcılar:`, users);
-      } else {
-        console.log("UserType filtresi uygulanmadı.");
-      }
-      
-      return users;
-    } catch (error: any) {
-      console.error('Kullanıcı arama hatası:', error);
-      
-      // İzin hatası durumunda özel işlem
-      if (error.code === 'permission-denied') {
-        console.warn('İzin hatası: Firebase güvenlik kurallarını kontrol edin.');
-        throw new Error('Kullanıcı arama izniniz yok. Lütfen Firebase güvenlik kurallarını kontrol edin.');
-      }
-      
-      throw error; // Diğer hataları tekrar fırlat
-    }
-  },
-
-  // Hasta için bekleyen ve onaylanan randevu sayısını getiren fonksiyon
-  getPatientUpcomingAppointmentsCount: async (patientId: string): Promise<number> => {
-    try {
-      const appointmentsRef = collection(db, 'appointments');
-      
-      // Yalnızca bekleyen ve onaylanan randevuları sayan sorgu
-      const q = query(
-        appointmentsRef,
-        where('patientId', '==', patientId),
-        where('status', 'in', ['pending', 'accepted'])
-      );
-      
-      const querySnapshot = await getDocs(q);
-      
-      // Gelecek tarihteki randevuları filtreleme
-      const now = new Date();
-      const validAppointments = querySnapshot.docs.filter(doc => {
-        const appointmentData = doc.data();
-        const appointmentDate = new Date(appointmentData.date);
-        return appointmentDate >= now;
-      });
-      
-      return validAppointments.length;
-    } catch (error) {
-      console.error('Randevu sayısı getirme hatası:', error);
-      return 0; // Hata durumunda 0 dön
-    }
-  },
-
   // Randevu seviyesini güncelleme - toplanan elma sayısını koruma
   updateAppointmentLevel: async (appointmentId: string, level: number, collectedApples?: number) => {
     try {
@@ -624,7 +558,7 @@ const firestoreService = {
       
       await updateDoc(appointmentRef, updateData);
       
-      console.log(`Randevu seviyesi güncellendi. ID: ${appointmentId}, Seviye: ${level}, ${collectedApples !== undefined ? `Elmalar: ${collectedApples}` : ''}`);
+      console.log(`Randevu seviyesi güncellendi. ID: ${appointmentId}, Seviye: ${level}`);
       return true;
     } catch (error: any) {
       console.error('Randevu seviyesi güncelleme hatası:', error);
@@ -651,6 +585,152 @@ const firestoreService = {
     
     // Dinlemeyi durdurmak için kullanılacak fonksiyonu döndür
     return unsubscribe;
+  },
+
+  // Bir bakıcının hastalarını getir
+  getCaregiverPatientsWithProfiles: async (caregiverId: string): Promise<UserProfile[]> => {
+    try {
+      // İlk olarak bakıcı-hasta ilişkilerini al
+      const relationsRef = collection(db, 'caregiverPatientRelations');
+      const q = query(
+        relationsRef,
+        where('caregiverId', '==', caregiverId)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      const patientIds: string[] = [];
+      
+      // Hasta ID'lerini topla
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.patientId) {
+          patientIds.push(data.patientId);
+        }
+      });
+      
+      // Hasta profillerini getir
+      const patientProfiles: UserProfile[] = [];
+      for (const patientId of patientIds) {
+        const profile = await firestoreService.getUserProfile(patientId);
+        if (profile) {
+          patientProfiles.push({
+            ...profile,
+            id: patientId
+          });
+        }
+      }
+      
+      return patientProfiles;
+    } catch (error) {
+      console.error("Bakıcının hastalarını getirirken hata oluştu:", error);
+      throw error;
+    }
+  },
+
+  // Kullanıcının mevcut ilişkilerini kontrol et (hasta ekleme için)
+  checkExistingPatientRelations: async (caregiverId: string, patientIds: string[]): Promise<string[]> => {
+    try {
+      const existingPatientIds: string[] = [];
+      
+      // İlişkileri kontrol et
+      const relationsRef = collection(db, 'caregiverPatientRelations');
+      
+      for (const patientId of patientIds) {
+        const q = query(
+          relationsRef,
+          where('caregiverId', '==', caregiverId),
+          where('patientId', '==', patientId)
+        );
+        
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          existingPatientIds.push(patientId);
+        }
+      }
+      
+      return existingPatientIds;
+    } catch (error) {
+      console.error("Mevcut ilişkiler kontrol edilirken hata oluştu:", error);
+      throw error;
+    }
+  },
+  
+  // Email'e göre kullanıcıları ara - userType parametresi eklendi
+  searchUsersByEmail: async (email: string, userType?: string): Promise<UserProfile[]> => {
+    try {
+      const usersRef = collection(db, 'users');
+      let q;
+      
+      if (userType) {
+        // Belirli bir kullanıcı tipine göre filtreleme yap
+        q = query(
+          usersRef,
+          where('email', '>=', email),
+          where('email', '<=', email + '\uf8ff'),
+          where('userType', '==', userType),
+          limit(10)
+        );
+      } else {
+        // Tüm kullanıcılar arasında ara
+        q = query(
+          usersRef,
+          where('email', '>=', email),
+          where('email', '<=', email + '\uf8ff'),
+          limit(10)
+        );
+      }
+      
+      const querySnapshot = await getDocs(q);
+      const users: UserProfile[] = [];
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        users.push({
+          id: doc.id,
+          uid: doc.id, // uid alanını ekle (bazı yerlerde kullanılabilir)
+          ...data
+        } as UserProfile);
+      });
+      
+      return users;
+    } catch (error) {
+      console.error("Kullanıcılar email ile aranırken hata oluştu:", error);
+      throw error;
+    }
+  },
+  
+  // Gelecek randevuları sayısını getir (hasta detay sayfası için)
+  getPatientUpcomingAppointmentsCount: async (patientId: string): Promise<number> => {
+    try {
+      const appointmentsRef = collection(db, 'appointments');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const q = query(
+        appointmentsRef,
+        where('patientId', '==', patientId),
+        where('status', 'in', ['pending', 'accepted'])
+      );
+      
+      const querySnapshot = await getDocs(q);
+      let count = 0;
+      
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const appointmentDate = data.date instanceof Timestamp 
+          ? data.date.toDate() 
+          : new Date(data.date);
+          
+        if (appointmentDate >= today) {
+          count++;
+        }
+      });
+      
+      return count;
+    } catch (error) {
+      console.error("Hasta gelecek randevuları sayısı alınırken hata oluştu:", error);
+      return 0;
+    }
   },
 };
 

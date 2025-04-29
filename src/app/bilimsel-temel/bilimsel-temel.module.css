@@ -1,0 +1,373 @@
+.container {
+  padding-top: 80px;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.heroSection {
+  background: linear-gradient(to right, #e0f7fe, #c5e8ff);
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.contentSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  color: #1a1a2e;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sectionIcon {
+  color: #4dabf7;
+  font-size: 1.8rem;
+}
+
+.neuroplasticitySection, 
+.vrScienceSection, 
+.researchSection,
+.applicationsSection,
+.expertSection,
+.summarySection {
+  margin-bottom: 4rem;
+  padding: 1rem 0;
+}
+
+.neuroplasticityContent {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+}
+
+.textContent {
+  flex: 3;
+}
+
+.imageContent {
+  flex: 2;
+}
+
+.roundedImage {
+  border-radius: 10px;
+  width: 100%;
+  height: auto;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.textContent p {
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+}
+
+.bullet {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.bullet li {
+  color: #555;
+  margin-bottom: 0.8rem;
+  line-height: 1.6;
+}
+
+.scienceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.scienceCard {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.scienceCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.scienceCard h3 {
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  border-left: 3px solid #4dabf7;
+  padding-left: 1rem;
+}
+
+.scienceCard p {
+  color: #555;
+  line-height: 1.7;
+}
+
+.researchContent {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 2rem;
+}
+
+.researchIntro {
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.researchStats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.statCard {
+  text-align: center;
+  padding: 1.5rem;
+  min-width: 200px;
+}
+
+.statNumber {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #4dabf7;
+  margin-bottom: 0.5rem;
+}
+
+.statCard p {
+  color: #555;
+}
+
+.researchFindings {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.findingItem {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.findingItem h3 {
+  color: #1a1a2e;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+}
+
+.findingItem p {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 0.8rem;
+}
+
+.citation {
+  font-size: 0.9rem;
+  color: #777;
+  font-style: italic;
+}
+
+.researchCTA {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.researchButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  background-color: #4dabf7;
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 30px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.researchButton:hover {
+  background-color: #3c99e9;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(77, 171, 247, 0.3);
+}
+
+.applicationsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.applicationCard {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.applicationCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.applicationCard h3 {
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.applicationCard p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.expertList {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.expertCard {
+  display: flex;
+  gap: 2rem;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.expertPhoto {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+
+.expertContent h3 {
+  color: #1a1a2e;
+  margin-bottom: 0.3rem;
+  font-size: 1.3rem;
+}
+
+.expertTitle {
+  color: #4dabf7;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.expertQuote {
+  color: #555;
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.summarySection {
+  background-color: #f0f9ff;
+  padding: 3rem;
+  border-radius: 10px;
+}
+
+.summaryContent {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.summaryContent h2 {
+  color: #1a1a2e;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.summaryContent p {
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.contactButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  background-color: #4dabf7;
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 30px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.contactButton:hover {
+  background-color: #3c99e9;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(77, 171, 247, 0.3);
+}
+
+@media (max-width: 992px) {
+  .neuroplasticityContent {
+    flex-direction: column;
+  }
+  
+  .expertCard {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .expertContent {
+    text-align: center;
+  }
+  
+  .expertImage {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+  
+  .scienceGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .researchStats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .summarySection {
+    padding: 2rem 1rem;
+  }
+}

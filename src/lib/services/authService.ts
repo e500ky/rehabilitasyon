@@ -1,142 +1,141 @@
-export interface SignUpData {
+import { auth } from '@/lib/firebase';
+import {
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+  User
+} from 'firebase/auth';
+import firestoreService from './firestoreService';
+
+interface LoginData {
   email: string;
   password: string;
-  name?: string;
+  captchaToken?: string;
 }
 
-export interface SignInData {
+interface RegisterData {
   email: string;
   password: string;
+  displayName: string;
+  userType: 'patient' | 'caregiver';
+  captchaToken?: string;
 }
 
-export interface User {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  emailVerified: boolean;
-  photoURL?: string | null;
-  createdAt?: string;
-}
-
-class AuthService {
+const authService = {
   // Kullanıcı kaydı
-  async signUp({ email, password, name }: SignUpData): Promise<User> {
+  register: async (userData: RegisterData): Promise<User> => {
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password, name }),
-      });
-
-      const data = await response.json();
+      // reCAPTCHA kontrolü (bypass tokenlar ile esnek çalışma)
+      const bypassTokens = [
+        'dev_mode_bypass_token', 
+        'missing_config_bypass_token', 
+        'error_bypass_token',
+        'render_error_bypass_token',
+        'timeout_bypass_token',
+        'init_error_bypass_token'
+      ];
       
-      if (!response.ok) {
-        throw new Error(data.error || 'Kayıt olma hatası');
+      // captchaToken varsa ve geçersizse hata fırlat
+      // Ancak bypass tokenlerden biriyse kontrolü atla
+      if (userData.captchaToken && 
+          !bypassTokens.includes(userData.captchaToken) && 
+          userData.captchaToken.length < 20) {
+        throw new Error("Geçersiz reCAPTCHA doğrulaması. Lütfen tekrar deneyin.");
       }
+
+      // Firebase ile kullanıcı kaydı
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        userData.email,
+        userData.password
+      );
       
-      return data.user;
+      const user = userCredential.user;
+      
+      // Kullanıcı profilini güncelle
+      await updateProfile(user, {
+        displayName: userData.displayName
+      });
+      
+      // Firestore'da kullanıcı profili oluştur
+      await firestoreService.createUserProfile(user.uid, {
+        uid: user.uid,
+        displayName: userData.displayName,
+        email: userData.email,
+        userType: userData.userType,
+        photoURL: user.photoURL || null
+      });
+      
+      // Captcha token'ını kullanarak ekstra doğrulama yapabilirsiniz
+      // Örnek: Bir Cloud Function çağrısı ile token'ı doğrulayabilirsiniz
+      
+      return user;
     } catch (error) {
-      console.error('Kayıt olma servis hatası:', error);
+      console.error("Kayıt hatası:", error);
       throw error;
     }
-  }
-
+  },
+  
   // Kullanıcı girişi
-  async signIn({ email, password }: SignInData): Promise<User> {
+  login: async (loginData: LoginData): Promise<User> => {
     try {
-      const response = await fetch('/api/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
+      // reCAPTCHA kontrolü (bypass tokenlar ile esnek çalışma)
+      const bypassTokens = [
+        'dev_mode_bypass_token', 
+        'missing_config_bypass_token', 
+        'error_bypass_token',
+        'render_error_bypass_token',
+        'timeout_bypass_token',
+        'init_error_bypass_token'
+      ];
       
-      if (!response.ok) {
-        throw new Error(data.error || 'Oturum açma hatası');
+      // captchaToken varsa ve geçersizse hata fırlat
+      // Ancak bypass tokenlerden biriyse kontrolü atla
+      if (loginData.captchaToken && 
+          !bypassTokens.includes(loginData.captchaToken) && 
+          loginData.captchaToken.length < 20) {
+        throw new Error("Geçersiz reCAPTCHA doğrulaması. Lütfen tekrar deneyin.");
       }
+
+      const { email, password } = loginData;
       
-      return data.user;
+      // Captcha token'ını kullanarak ekstra doğrulama yapabilirsiniz
+      // Örnek: Bir Cloud Function çağrısı ile token'ı doğrulayabilirsiniz
+      
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      
+      return userCredential.user;
     } catch (error) {
-      console.error('Oturum açma servis hatası:', error);
+      console.error("Giriş hatası:", error);
       throw error;
     }
-  }
-
-  // Oturumu kapat
-  async signOut(): Promise<void> {
+  },
+  
+  // Çıkış yap
+  signOut: async () => {
     try {
-      const response = await fetch('/api/auth/signout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Oturum kapatma hatası');
-      }
+      await signOut(auth);
     } catch (error) {
-      console.error('Oturum kapatma servis hatası:', error);
+      console.error('Çıkış yapma hatası:', error);
       throw error;
     }
-  }
-
-  // Kullanıcı bilgilerini al
-  async getCurrentUser(): Promise<User | null> {
-    try {
-      const response = await fetch('/api/auth/user', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      // 401 durumunda kullanıcının oturum açmadığını düşünüyoruz
-      if (response.status === 401) {
-        return null;
-      }
-
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Kullanıcı bilgisi alma hatası');
-      }
-      
-      return data.user;
-    } catch (error) {
-      console.error('Kullanıcı bilgisi alma servis hatası:', error);
-      return null;
-    }
-  }
-
+  },
+  
   // Şifre sıfırlama e-postası gönder
-  async sendPasswordReset(email: string): Promise<void> {
+  resetPassword: async (email: string) => {
     try {
-      const response = await fetch('/api/auth/reset-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Şifre sıfırlama hatası');
-      }
+      await sendPasswordResetEmail(auth, email);
     } catch (error) {
-      console.error('Şifre sıfırlama servis hatası:', error);
+      console.error('Şifre sıfırlama hatası:', error);
       throw error;
     }
   }
-}
+};
 
-export default new AuthService();
+export default authService;

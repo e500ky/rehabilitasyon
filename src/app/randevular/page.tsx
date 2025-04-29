@@ -320,6 +320,25 @@ export default function Randevular() {
     }
   };
   
+  // Randevu silme işlemi
+  const handleDeleteAppointment = async (appointmentId: string) => {
+    if (!currentUser) return;
+    
+    if (window.confirm('Bu randevuyu kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+      try {
+        // Randevu silme işlemi
+        await firestoreService.deleteAppointment(appointmentId);
+        
+        // State'i güncelle - silinen randevuyu kaldır
+        setAppointments(prev => prev.filter(appointment => appointment.id !== appointmentId));
+        
+      } catch (err) {
+        console.error("Randevu silme hatası:", err);
+        alert("Randevu silinirken bir hata oluştu.");
+      }
+    }
+  };
+
   // Randevu filtreleme
   const filteredAppointments = appointments.filter(appointment => {
     const appointmentDate = parseISO(appointment.date);
@@ -543,7 +562,7 @@ export default function Randevular() {
                     <div className={styles.appointmentActions}>
                       {userProfile?.userType === 'caregiver' && !showStartModal && (
                         <button 
-                          className={styles.completeButton}
+                          className={styles.continueButton}
                           onClick={() => handleStartAppointment(appointment)}
                         >
                           Seansa Devam Et
@@ -706,6 +725,12 @@ export default function Randevular() {
               <div className={styles.infoCard}>
                 <span className={styles.infoLabel}>Şu anki Seviye</span>
                 <span className={styles.infoValue}>{selectedLevel}</span>
+                <div className={styles.appleProgress}>
+                  <div 
+                    className={styles.levelProgressBar} 
+                    style={{ width: `${Math.min((selectedLevel || 0) * 100/9, 100)}%` }}
+                  ></div>
+                </div>
               </div>
               
               <div className={styles.infoCard}>
@@ -723,25 +748,19 @@ export default function Randevular() {
             {/* Kontrol Paneli Bölümü */}
             <div className={styles.controlPanel}>
               <div className={styles.controlItem}>
-                <label className={styles.controlLabel}>Seviye Ayarla (1-10)</label>
-                <select 
-                  value={selectedLevel}
-                  onChange={(e) => handleLevelChange(parseInt(e.target.value))}
-                  required
-                  className={styles.levelSelect}
-                >
-                  {Array.from({ length: 10 }, (_, i) => i + 1).map(level => (
-                    <option key={level} value={level}>
-                      Seviye {level}
-                    </option>
-                  ))}
-                </select>
-                <div className={styles.levelIndicator}>
-                  {Array.from({ length: 10 }, (_, i) => (
+                <label className={styles.controlLabel}>Seviye Seçin</label>
+                <div className={styles.levelGrid}>
+                  {Array.from({ length: 9 }, (_, i) => i + 1).map(level => (
                     <div 
-                      key={i} 
-                      className={`${styles.levelDot} ${i < selectedLevel ? styles.activeDot : ''}`}
-                    ></div>
+                      key={level}
+                      className={`${styles.levelBox} ${level === selectedLevel ? styles.selectedLevel : ''}`}
+                      onClick={() => handleLevelChange(level)}
+                    >
+                      <span className={styles.levelNumber}>{level}</span>
+                      <span className={styles.levelText}>
+                        {level == 9 ? "Dinamik": null}
+                      </span>
+                    </div>
                   ))}
                 </div>
               </div>

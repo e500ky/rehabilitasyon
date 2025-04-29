@@ -3,12 +3,12 @@
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/context/AuthContext';
 import {
-    faExclamationTriangle,
-    faLock,
-    faQuestionCircle,
-    faSave,
-    faShieldAlt,
-    faUser
+  faExclamationTriangle,
+  faLock,
+  faQuestionCircle,
+  faSave,
+  faShieldAlt,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from 'next/navigation';

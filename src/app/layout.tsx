@@ -1,29 +1,29 @@
-import Header from "@/components/Header";
-import { AuthProvider } from "@/context/AuthContext";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import { AuthProvider } from '@/context/AuthContext';
+import { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Rehabilitasyon Merkezi",
-  description: "Rehabilitasyon hizmetleri sunan merkez",
+  title: 'RWA - Rehabilitation With Apples',
+  description: 'İnme sonrası rehabilitasyon süreçlerini kolaylaştıran dijital platform',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="tr">
+      <head>
+        {/* Global reCAPTCHA script */}
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+      </head>
       <body className={inter.className}>
         <AuthProvider>
-          <Header />
-          <div style={{ paddingTop: '80px' }}>
-            {children}
-          </div>
+          {children}
         </AuthProvider>
       </body>
     </html>

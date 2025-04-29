@@ -1,56 +1,40 @@
 'use client';
 
-import authService, { User } from '@/lib/services/authService';
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
   currentUser: User | null;
   loading: boolean;
-  checkAuth: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({ currentUser: null, loading: true });
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Kullanıcı oturum durumunu kontrol et
-  const checkAuth = async () => {
-    setLoading(true);
-    try {
-      const user = await authService.getCurrentUser();
-      setCurrentUser(user);
-    } catch (error) {
-      console.error('Kullanıcı durumu kontrol hatası:', error);
-      setCurrentUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // İlk yükleme sırasında kullanıcı durumunu kontrol et
   useEffect(() => {
-    checkAuth();
+    // Firebase Auth durum değişikliğini dinle
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const value = {
     currentUser,
-    loading,
-    checkAuth
+    loading
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };

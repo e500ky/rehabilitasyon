@@ -1,24 +1,20 @@
-// Firebase App (temel Firebase SDK) ekleniyor
-import { initializeApp } from "firebase/app";
-// Firebase ürünleri için gerekli olanlar
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
-// Firebase yapılandırma bilgileri
+// Firebase yapılandırma bilgilerini çevre değişkenlerinden al
 const firebaseConfig = {
-  apiKey: "AIzaSyAT-3wn1pkQd9ANTmrzaXoyx3imKR6DBfo",
-  authDomain: "rehabilitasyon-ee609.firebaseapp.com",
-  projectId: "rehabilitasyon-ee609",
-  storageBucket: "rehabilitasyon-ee609.firebasestorage.app",
-  messagingSenderId: "952115674678",
-  appId: "1:952115674678:web:3c100eaeb4a6d1fe132297",
-  measurementId: "G-T82SPMVF2C"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Firebase'i başlat
 const app = initializeApp(firebaseConfig);
-
-// Kullanılacak Firebase servisleri
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 

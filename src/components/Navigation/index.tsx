@@ -1,16 +1,19 @@
 'use client';
 
-import { useAuth } from '@/context/AuthContext';
 import authService from '@/lib/services/authService';
+import { faHouse, faInfo, faPhone } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styles from './Navigation.module.css';
+interface NavigationProps {
+  isAuthenticated: boolean;
+}
 
-const Navigation: React.FC = () => {
+const Navigation: React.FC<NavigationProps> = ({ isAuthenticated }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
-  const { currentUser, checkAuth } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -19,7 +22,6 @@ const Navigation: React.FC = () => {
   const handleSignOut = async () => {
     try {
       await authService.signOut();
-      await checkAuth();
       router.push('/');
     } catch (error) {
       console.error('Oturum kapatma hatası:', error);
@@ -36,38 +38,14 @@ const Navigation: React.FC = () => {
       
       <ul className={`${styles.navLinks} ${isMenuOpen ? styles.active : ''}`}>
         <li className={styles.navItem}>
-          <Link href="/" className={styles.navLink}>Ana Sayfa</Link>
+          <Link href="/" className={styles.navLink}><FontAwesomeIcon icon={faHouse} className={styles.homeIcon} /> Ana Sayfa</Link>
         </li>
         <li className={styles.navItem}>
-          <Link href="/hakkimizda" className={styles.navLink}>Hakkımızda</Link>
+          <Link href="/hakkimizda" className={styles.navLink}><FontAwesomeIcon icon={faInfo} className={styles.homeIcon} />Hakkımızda</Link>
         </li>
         <li className={styles.navItem}>
-          <Link href="/iletisim" className={styles.navLink}>İletişim</Link>
+          <Link href="/iletisim" className={styles.navLink}><FontAwesomeIcon icon={faPhone} className={styles.homeIcon} />İletişim</Link>
         </li>
-        
-        {!currentUser ? (
-          <>
-            <li className={styles.navItem}>
-              <Link href="/kayit-ol" className={`${styles.navLink} ${styles.authLink}`}>Kayıt Ol</Link>
-            </li>
-            <li className={styles.navItem}>
-              <Link href="/oturum-ac" className={`${styles.navLink} ${styles.authLink} ${styles.loginLink}`}>Oturum Aç</Link>
-            </li>
-          </>
-        ) : (
-          <>
-            <li className={styles.navItem}>
-              <Link href="/profil" className={`${styles.navLink} ${styles.authLink}`}>
-                {currentUser.displayName || 'Profilim'}
-              </Link>
-            </li>
-            <li className={styles.navItem}>
-              <button onClick={handleSignOut} className={`${styles.navLink} ${styles.authLink} ${styles.logoutButton}`}>
-                Çıkış Yap
-              </button>
-            </li>
-          </>
-        )}
       </ul>
     </nav>
   );

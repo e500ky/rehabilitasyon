@@ -12,9 +12,6 @@ export interface UserStats {
   maxLevel?: number; // Kullanıcının ulaştığı en yüksek seviye
   totalCollectedApples?: number; // Toplam toplanan elma sayısı  
   progressPercentage?: number; // İlerleme yüzdesi
-  currentLevel?: number; // Kullanıcının şu anki seviyesi
-  collectedApples?: number; // Bu seviyede toplanan elma sayısı
-  // Diğer istatistikler
 }
 
 export interface ProgressDataPoint {

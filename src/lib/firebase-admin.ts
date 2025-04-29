@@ -1,4 +1,6 @@
-import * as admin from 'firebase-admin';
+import { cert, getApps, initializeApp } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
 
 // Servis hesabı için environment variable'ları kontrol et
 if (!process.env.FIREBASE_PROJECT_ID) {
@@ -6,12 +8,12 @@ if (!process.env.FIREBASE_PROJECT_ID) {
 }
 
 // Admin SDK yapılandırması
-let app: admin.app.App;
+let app;
 
-if (!admin.apps.length) {
+if (!getApps().length) {
   // Firebase Admin SDK yapılandırması
-  app = admin.initializeApp({
-    credential: admin.credential.cert({
+  app = initializeApp({
+    credential: cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
       // \n karakterlerini kullanmadan private key'i doğru formatta ayarlama
@@ -20,10 +22,10 @@ if (!admin.apps.length) {
     databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
   });
 } else {
-  app = admin.app();
+  app = getApps()[0];
 }
 
-export const auth = app.auth();
-export const db = app.firestore();
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
 export default app;

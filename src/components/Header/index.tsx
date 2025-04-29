@@ -18,7 +18,7 @@ const Header: React.FC = () => {
             <Image 
               src="/logo.png" 
               alt="Rehabilitasyon Logo" 
-              width={150} 
+              width={60} 
               height={60} 
               className={styles.logo}
               priority

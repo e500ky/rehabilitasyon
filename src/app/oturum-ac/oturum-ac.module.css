@@ -1,3 +1,10 @@
+.main {
+  height: 100vh;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
 .container {
   display: flex;
   justify-content: center;
@@ -5,6 +12,35 @@
   min-height: calc(100vh - 80px);
   padding: 2rem;
   background-color: #f9f9f9;
+  position: relative;
+}
+
+.backButton {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #f0f0f0;
+  color: #555;
+  padding: 0.6rem 1rem;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.backButton:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.backIcon {
+  font-size: 0.9rem;
 }
 
 .formContainer {
@@ -21,6 +57,19 @@
   color: #333;
   margin-bottom: 1.5rem;
   text-align: center;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.title:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: #0070f3;
 }
 
 .form {
@@ -38,6 +87,14 @@
 .formGroup label {
   font-weight: 500;
   color: #555;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inputIcon {
+  color: #0070f3;
+  font-size: 0.9em;
 }
 
 .formGroup input {
@@ -46,6 +103,10 @@
   border-radius: 4px;
   font-size: 1rem;
   transition: border-color 0.3s;
+}
+
+.inputWithIcon {
+  padding-left: 2.5rem;
 }
 
 .formGroup input:focus {
@@ -65,9 +126,11 @@
   font-size: 0.9rem;
   cursor: pointer;
   padding: 0;
+  transition: color 0.2s ease;
 }
 
 .forgotButton:hover {
+  color: #005fc3;
   text-decoration: underline;
 }
 
@@ -82,15 +145,27 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.buttonIcon {
+  font-size: 1rem;
 }
 
 .submitButton:hover {
   background-color: #005fc3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .submitButton:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .error {
@@ -100,6 +175,13 @@
   border-radius: 4px;
   border-left: 4px solid #d32f2f;
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.errorIcon {
+  color: #d32f2f;
 }
 
 .linkContainer {
@@ -112,8 +194,10 @@
   color: #0070f3;
   font-weight: 500;
   text-decoration: none;
+  transition: all 0.2s ease;
 }
 
 .linkContainer a:hover {
+  color: #005fc3;
   text-decoration: underline;
 }

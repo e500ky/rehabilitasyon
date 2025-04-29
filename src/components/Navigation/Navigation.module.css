@@ -9,10 +9,16 @@
   margin: 0;
   padding: 0;
   align-items: center;
+  gap: 1rem;
 }
 
 .navItem {
   margin-left: 1.5rem;
+}
+
+.homeIcon {
+  font-size: 1.25rem;
+  color: #0070f3;
 }
 
 .navLink {
@@ -22,6 +28,9 @@
   font-weight: 500;
   transition: all 0.3s ease;
   padding: 0.5rem;
+  justify-content: center;
+  display: flex;
+  gap: 10px;
 }
 
 .navLink:hover {
@@ -31,6 +40,12 @@
 .authLink {
   border-radius: 4px;
   padding: 0.5rem 1rem;
+  border-right: 0;
+  border-radius: 10px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-left: 1rem;
+  background-color: whitesmoke;
 }
 
 .authLink:hover {
@@ -38,6 +53,10 @@
 }
 
 .loginLink {
+  border-radius: 10px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: 0;
   background-color: #0070f3;
   color: white;
 }
@@ -56,10 +75,17 @@
   font-weight: 500;
   padding: 0.5rem 1rem;
   color: #d32f2f;
+  margin-left: -1.5rem;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  background-color: rgba(211, 47, 47, 0.1);
+  color: #d32f2f;
 }
 
 .logoutButton:hover {
-  background-color: rgba(211, 47, 47, 0.1);
+  background-color: rgba(211, 47, 47, 0.25);
   color: #d32f2f;
 }
 

@@ -26,7 +26,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | React.ReactNode>(null);
-  const [userType, setUserType] = useState('patient'); // 'patient' veya 'caregiver'
+  const [userType, setUserType] = useState('patient'); 
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const router = useRouter();

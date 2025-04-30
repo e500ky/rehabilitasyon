@@ -1,8 +1,6 @@
-// Tarih formatı yardımcı işlevi
 export const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   
-  // Türkçe lokal tarih formatını kullan
   return date.toLocaleDateString('tr-TR', {
     day: 'numeric',
     month: 'long',
@@ -10,7 +8,6 @@ export const formatDate = (dateString: string): string => {
   });
 };
 
-// Saat formatı yardımcı işlevi
 export const formatTime = (dateString: string): string => {
   const date = new Date(dateString);
   
@@ -20,7 +17,6 @@ export const formatTime = (dateString: string): string => {
   });
 };
 
-// Para birimi formatı
 export const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat('tr-TR', {
     style: 'currency',
@@ -29,7 +25,6 @@ export const formatCurrency = (amount: number): string => {
   }).format(amount);
 };
 
-// Durum metinlerini görsel etiketlere dönüştürür
 export const getStatusLabel = (status: string): { label: string; colorClass: string } => {
   switch (status) {
     case 'pending':

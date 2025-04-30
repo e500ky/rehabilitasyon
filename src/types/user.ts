@@ -9,10 +9,10 @@ export interface UserProfile {
 }
 
 export interface UserStats {
-    maxLevel?: number; // Kullanıcının ulaştığı en yüksek seviye
-    totalCollectedApples?: number; // Toplam toplanan elma sayısı  
-    progressPercentage?: number; // İlerleme yüzdesi
-    sessionsCount?: number; // Toplam seans sayısı
+    maxLevel?: number;
+    totalCollectedApples?: number;  
+    progressPercentage?: number; 
+    sessionsCount?: number; 
 }
 
 export interface ProgressDataPoint {
@@ -32,13 +32,13 @@ export interface AppointmentData {
   patientName: string;
   caregiverId: string;
   caregiverName: string;
-  date: string; // ISO string formatında tarih
-  time: string; // HH:MM formatında saat
-  type: string; // Randevu türü
-  notes?: string; // Opsiyonel notlar
+  date: string;
+  time: string;
+  type: string;
+  notes?: string;
   status: 'pending' | 'accepted' | 'completed' | 'cancelled';
-  currentLevel?: number; // Seçilen seviye (1-10 arası)
-  collectedApples?: number; // Toplanan elma sayısı
-  createdAt?: any; // FireStore timestamp
-  updatedAt?: any; // FireStore timestamp
+  currentLevel?: number;
+  collectedApples?: number;
+  createdAt?: any;
+  updatedAt?: any;
 }

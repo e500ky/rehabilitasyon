@@ -122,7 +122,7 @@ export default function AddPatient() {
       setSearchQuery('');
       
       setTimeout(() => {
-        router.push('/patients');
+        router.push('/dashboard');
       }, 2000);
       
     } catch (err: any) {

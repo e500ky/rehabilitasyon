@@ -818,7 +818,6 @@ export default function Randevular() {
                             type="number"
                             value={basketPosition.x}
                             onChange={(e) => {
-                              handleBasketPositionChange('x', e.target.value)
                               if (parseInt(e.target.value) > 3) {
                                 setBasketPosition({ ...basketPosition, x: 3 });
                               } else if (parseInt(e.target.value) < -3) {
@@ -839,7 +838,6 @@ export default function Randevular() {
                             type="number"
                             value={basketPosition.y}
                             onChange={(e) => {
-                              handleBasketPositionChange('y', e.target.value)
                               if (parseInt(e.target.value) > 3) {
                                 setBasketPosition({ ...basketPosition, y: 3 });
                               } else if (parseInt(e.target.value) < 0) {
@@ -860,7 +858,6 @@ export default function Randevular() {
                             type="number"
                             value={basketPosition.z}
                             onChange={(e) => {
-                              handleBasketPositionChange('z', e.target.value)
                               if (parseInt(e.target.value) > 3) {
                                 setBasketPosition({ ...basketPosition, z: 3 });
                               } else if (parseInt(e.target.value) < -3) {
@@ -891,7 +888,6 @@ export default function Randevular() {
                             type="number"
                             value={applePosition.x}
                             onChange={(e) => {
-                              handleApplePositionChange('x', e.target.value)
                               if (parseInt(e.target.value) > 3) {
                                 setApplePosition({ ...applePosition, x: 3 });
                               } else if (parseInt(e.target.value) < -3) {
@@ -912,7 +908,6 @@ export default function Randevular() {
                             type="number"
                             value={applePosition.y}
                             onChange={(e) => {
-                              handleApplePositionChange('y', e.target.value)
                               if (parseInt(e.target.value) > 3) {
                                 setApplePosition({ ...applePosition, y: 3 });
                               } else if (parseInt(e.target.value) < 0) {
@@ -933,7 +928,6 @@ export default function Randevular() {
                             type="number"
                             value={applePosition.z}
                             onChange={(e) => {
-                              handleApplePositionChange('z', e.target.value)
                               if (parseInt(e.target.value) > 3) {
                                 setApplePosition({ ...applePosition, z: 3 });
                               } else if (parseInt(e.target.value) < -3) {
@@ -949,6 +943,36 @@ export default function Randevular() {
                           />
                         </div>
                       </div>
+                    </div>
+                    <div className={styles.formActions}>
+                      <button 
+                        type="button" 
+                        className={styles.completeButton}
+                        id="applyButton"
+                        onClick={
+                          async () => {
+                            const button = document.getElementById("applyButton");
+                            button.setAttribute("disabled", "true");
+                            button.innerHTML = "Kaydedildi";
+                            await firestoreService.updateAppointmentTotalPosition(
+                              selectedAppointment.id, 
+                              basketPosition, 
+                              applePosition
+                            );
+                            
+                            setDynamicConfigured(true);
+                            setTimeout(() => {
+                              button.removeAttribute("disabled");
+                              button.innerHTML = "Konumları Kaydet";
+                            }, 750);
+                          }
+                        }
+                        style={{
+                          marginTop: '-15px'
+                        }}
+                      >
+                        Konumları Kaydet
+                      </button>
                     </div>
                   </div>
                 </div>

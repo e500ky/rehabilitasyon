@@ -35,11 +35,9 @@ export default function CaregiverDashboard({ userProfile }: CaregiverDashboardPr
     const loadData = async () => {
       try {
         if (userProfile?.uid) {
-          // Bakıcının hastalarını yükle
           const patientsList = await firestoreService.getCaregiverPatients(userProfile.uid);
           setPatients(patientsList);
 
-          // Bakıcının yaklaşan randevularını yükle
           const appointmentsList = await firestoreService.getCaregiverAppointments(userProfile.uid, 'pending');
           setAppointments(appointmentsList);
         }
@@ -58,7 +56,6 @@ export default function CaregiverDashboard({ userProfile }: CaregiverDashboardPr
     try {
       if (action === 'accept') {
         await firestoreService.updateAppointmentStatus(appointmentId, 'accepted');
-        // Randevuları güncelle
         setAppointments(prevAppointments => 
           prevAppointments.map(appointment => 
             appointment.id === appointmentId 
@@ -68,7 +65,6 @@ export default function CaregiverDashboard({ userProfile }: CaregiverDashboardPr
         );
       } else {
         await firestoreService.updateAppointmentStatus(appointmentId, 'cancelled');
-        // Randevuları güncelle
         setAppointments(prevAppointments => 
           prevAppointments.map(appointment => 
             appointment.id === appointmentId 

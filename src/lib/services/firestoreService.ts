@@ -1,24 +1,23 @@
 import { AppointmentData, ProgressData, UserProfile, UserStats } from '@/types/user';
 import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  limit,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  setDoc,
-  Timestamp,
-  updateDoc,
-  where
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    limit,
+    onSnapshot,
+    orderBy,
+    query,
+    serverTimestamp,
+    setDoc,
+    Timestamp,
+    updateDoc,
+    where
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
-// Yeniden deneme mekanizması
 const retry = async (fn: Function, retries = 3, delay = 1000) => {
   try {
     return await fn();
@@ -38,11 +37,15 @@ const retry = async (fn: Function, retries = 3, delay = 1000) => {
   }
 };
 
+interface PositionData {
+  x: number;
+  y: number;
+  z: number;
+}
+
 const firestoreService = {
-  // Kullanıcı profili oluşturma
   createUserProfile: async (uid: string, userData: UserProfile): Promise<void> => {
     try {
-      // Yeni kullanıcı oluştuğunda kullanıcı dokümanını ekle
       await retry(async () => {
         const userRef = doc(db, 'users', uid);
         await setDoc(userRef, {
@@ -52,7 +55,6 @@ const firestoreService = {
         });
       });
       
-      // İstatistik dokümanını ekle
       await retry(async () => {
         const statsRef = doc(db, 'stats', uid);
         await setDoc(statsRef, {
@@ -63,7 +65,6 @@ const firestoreService = {
         });
       });
       
-      // İlerleme dokümanını ekle
       await retry(async () => {
         const progressRef = doc(db, 'progress', uid);
         await setDoc(progressRef, {
@@ -72,7 +73,6 @@ const firestoreService = {
         });
       });
       
-      console.log("Kullanıcı profili ve ilgili veriler başarıyla oluşturuldu");
     } catch (error) {
       console.error('Kullanıcı profili oluşturma hatası:', error);
       
@@ -110,7 +110,6 @@ const firestoreService = {
     }
   },
   
-  // Kullanıcı profili alma
   getUserProfile: async (uid: string): Promise<UserProfile | null> => {
     try {
       const userRef = doc(db, 'users', uid);
@@ -119,7 +118,6 @@ const firestoreService = {
       if (docSnap.exists()) {
         return docSnap.data() as UserProfile;
       } else {
-        console.log('Kullanıcı profili bulunamadı!');
         return null;
       }
     } catch (error) {
@@ -128,7 +126,6 @@ const firestoreService = {
     }
   },
   
-  // Kullanıcı istatistiklerini alma
   getUserStats: async (userId: string) => {
     try {
       const statsRef = doc(db, 'stats', userId);
@@ -136,12 +133,11 @@ const firestoreService = {
       
       if (statsDoc.exists()) {
         const data = statsDoc.data();
-        // stats artık maxLevel ve totalCollectedApples içeriyor
         return {
           maxLevel: data.maxLevel || 1,
           totalCollectedApples: data.totalCollectedApples || 0,
           progressPercentage: data.progressPercentage || 0,
-          // Diğer istatistikler
+          sessionsCount: data.sessionsCount || 0,
         };
       }
       
@@ -152,7 +148,6 @@ const firestoreService = {
     }
   },
   
-  // Kullanıcı ilerleme verilerini alma
   getUserProgress: async (uid: string): Promise<ProgressData | null> => {
     try {
       const progressRef = doc(db, 'progress', uid);
@@ -161,7 +156,6 @@ const firestoreService = {
       if (docSnap.exists()) {
         return docSnap.data() as ProgressData;
       } else {
-        console.log('Kullanıcı ilerleme verileri bulunamadı!');
         return null;
       }
     } catch (error) {
@@ -170,7 +164,6 @@ const firestoreService = {
     }
   },
   
-  // Kullanıcı istatistiklerini gerçek zamanlı dinleme
   subscribeToUserStats: (uid: string, callback: (data: UserStats) => void) => {
     const statsRef = doc(db, 'stats', uid);
     return onSnapshot(statsRef, (doc) => {
@@ -180,7 +173,6 @@ const firestoreService = {
     });
   },
   
-  // Kullanıcı ilerleme verilerini gerçek zamanlı dinleme
   subscribeToUserProgress: (uid: string, callback: (data: ProgressData) => void) => {
     const progressRef = doc(db, 'progress', uid);
     return onSnapshot(progressRef, (doc) => {
@@ -190,7 +182,6 @@ const firestoreService = {
     });
   },
   
-  // İlerleme verisine yeni veri noktası ekleme
   addProgressDataPoint: async (uid: string, dataPoint: { date: string, progress: number, painLevel: number }): Promise<void> => {
     try {
       const progressRef = doc(db, 'progress', uid);
@@ -211,7 +202,6 @@ const firestoreService = {
     }
   },
 
-  // Randevu başlatma (seviye ve toplanan elma sayısı ile)
   startAppointment: async (appointmentId: string, level: number, collectedApples: number = 0) => {
     try {
       const appointmentRef = doc(db, 'appointments', appointmentId);
@@ -223,7 +213,6 @@ const firestoreService = {
         updatedAt: serverTimestamp()
       });
       
-      console.log(`Randevu başlatıldı. ID: ${appointmentId}, Seviye: ${level}, Elmalar: ${collectedApples}`);
       return true;
     } catch (error: any) {
       console.error('Randevu başlatma hatası:', error);
@@ -245,29 +234,31 @@ const firestoreService = {
         // Mevcut değerleri kontrol et
         const currentMaxLevel = statsData.maxLevel || 1;
         const currentTotalApples = statsData.totalCollectedApples || 0;
+        const currentSessionsCount = statsData.sessionsCount || 0;
         
         // Yeni değerleri hesapla
         const newMaxLevel = Math.max(currentMaxLevel, level);
         const newTotalApples = currentTotalApples + collectedApples;
+        const newSessionsCount = currentSessionsCount + 1; // Seans sayısını 1 arttır
         
         // Stats'i güncelle
         await updateDoc(statsRef, {
           maxLevel: newMaxLevel,
           totalCollectedApples: newTotalApples,
+          sessionsCount: newSessionsCount, // Arttırılan seans sayısı
           updatedAt: serverTimestamp()
         });
         
-        console.log(`Kullanıcı stats güncellendi. ID: ${userId}, MaxLevel: ${newMaxLevel}, TotalApples: ${newTotalApples}`);
       } else {
         // Stats yoksa yeni oluştur
         await setDoc(statsRef, {
           maxLevel: level,
           totalCollectedApples: collectedApples,
+          sessionsCount: 1, // İlk seans
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp()
         });
         
-        console.log(`Yeni kullanıcı stats oluşturuldu. ID: ${userId}, MaxLevel: ${level}, TotalApples: ${collectedApples}`);
       }
       
       return true;
@@ -292,7 +283,6 @@ const firestoreService = {
       };
       
       const docRef = await addDoc(appointmentsRef, appointmentWithData);
-      console.log(`Yeni randevu oluşturuldu. ID: ${docRef.id}`);
       
       return docRef.id;
     } catch (error) {
@@ -320,17 +310,15 @@ const firestoreService = {
     try {
       const appointmentRef = doc(db, 'appointments', appointmentId);
       await deleteDoc(appointmentRef);
-      console.log(`Randevu başarıyla silindi: ${appointmentId}`);
     } catch (error) {
       console.error('Randevu silme hatası:', error);
       throw error;
     }
   },
   
-  // Bakıcı-hasta ilişkisi oluşturma
+  // Kullanıcı-hasta ilişkisi oluşturma
   createCaregiverPatientRelation: async (caregiverId: string, patientId: string): Promise<string> => {
     try {
-      console.log(`İlişki oluşturma başlatıldı - Bakıcı: ${caregiverId}, Hasta: ${patientId}`);
       
       // Koleksiyon adını doğrulama
       const collectionName = 'caregiverPatientRelations'; // Doğru koleksiyon adı
@@ -339,7 +327,6 @@ const firestoreService = {
       try {
         const testColRef = collection(db, collectionName);
         const testQuerySnapshot = await getDocs(query(testColRef, limit(1)));
-        console.log(`Firestore bağlantısı test edildi. ${collectionName} koleksiyonu mevcut.`);
       } catch (testErr) {
         console.error(`Firestore bağlantı testi başarısız: ${testErr}`);
       }
@@ -348,7 +335,6 @@ const firestoreService = {
       const timestamp = new Date().getTime();
       const relationId = `rel_${timestamp}_${caregiverId.substring(0, 4)}_${patientId.substring(0, 4)}`;
       
-      console.log(`Oluşturulan ilişki ID: ${relationId}`);
       
       // İlişki objesi
       const relationData = {
@@ -359,17 +345,15 @@ const firestoreService = {
         status: 'active'
       };
       
-      console.log('Kaydedilecek veri:', relationData);
       
       // DOĞRUDAN KOLEKSIYON REFERANSI KULLANARAK DENEMEK
       const relationsCollectionRef = collection(db, collectionName);
       const docRef = await addDoc(relationsCollectionRef, relationData);
       
-      console.log(`İlişki başarıyla oluşturuldu, otomatik ID: ${docRef.id}`);
       
       return docRef.id;
     } catch (error: any) {
-      console.error('Bakıcı-hasta ilişkisi oluşturma hatası:', error);
+      console.error('Kullanıcı-hasta ilişkisi oluşturma hatası:', error);
       
       // Hata türüne göre daha spesifik mesajlar
       if (error.code === 'permission-denied') {
@@ -382,22 +366,20 @@ const firestoreService = {
     }
   },
   
-  // Bakıcı-hasta ilişkisini silme
+  // Kullanıcı-hasta ilişkisini silme
   deleteCaregiverPatientRelation: async (relationId: string): Promise<void> => {
     try {
-      console.log(`İlişki siliniyor: ${relationId}`);
       const relationRef = doc(db, 'caregiverPatientRelations', relationId);
       
       // İlişkiyi tamamen sil
       await deleteDoc(relationRef);
-      console.log(`İlişki başarıyla silindi: ${relationId}`);
     } catch (error) {
-      console.error('Bakıcı-hasta ilişkisi silme hatası:', error);
+      console.error('Kullanıcı-hasta ilişkisi silme hatası:', error);
       throw error;
     }
   },
 
-  // Bakıcı randevularını getir
+  // Kullanıcı randevularını getir
   getCaregiverAppointments: async (caregiverId: string): Promise<AppointmentData[]> => {
     try {
       const appointmentsRef = collection(db, 'appointments');
@@ -421,15 +403,14 @@ const firestoreService = {
       
       return appointments;
     } catch (error) {
-      console.error("Bakıcı randevularını getirirken hata oluştu:", error);
+      console.error("Kullanıcı randevularını getirirken hata oluştu:", error);
       throw error;
     }
   },
 
-  // Bakıcı-hasta ilişkilerini getir
+  // Kullanıcı-hasta ilişkilerini getir
   getCaregiverPatients: async (caregiverId: string) => {
     try {
-      console.log(`Bakıcının (${caregiverId}) hastalarını getirme işlemi başladı...`);
       
       // Doğru koleksiyon adı: caregiverPatientRelations
       const relationsRef = collection(db, 'caregiverPatientRelations');
@@ -440,10 +421,8 @@ const firestoreService = {
       );
       
       const querySnapshot = await getDocs(q);
-      console.log(`${querySnapshot.size} ilişki bulundu.`);
       
       if (querySnapshot.empty) {
-        console.log('Bakıcının hiç hasta ilişkisi bulunamadı');
         return [];
       }
       
@@ -453,7 +432,6 @@ const firestoreService = {
           const relationData = relationDoc.data();
           const patientId = relationData.patientId;
           
-          console.log(`Hasta bilgisi alınıyor: ${patientId}`);
           
           // Hasta profilini getir
           const patientRef = doc(db, 'users', patientId);
@@ -461,7 +439,6 @@ const firestoreService = {
           
           if (patientDoc.exists()) {
             const patientData = patientDoc.data();
-            console.log(`Hasta ${patientId} bilgileri alındı:`, patientData.displayName || 'İsimsiz Hasta');
             
             return {
               id: patientId,
@@ -472,7 +449,6 @@ const firestoreService = {
               lastAppointmentDate: undefined
             };
           } else {
-            console.log(`${patientId} ID'li hasta bulunamadı.`);
           }
           return null;
         } catch (err) {
@@ -482,7 +458,6 @@ const firestoreService = {
       }));
       
       const filteredPatients = patients.filter(p => p !== null);
-      console.log(`Sonuç: ${filteredPatients.length} hasta bulundu.`);
       
       return filteredPatients;
     } catch (error) {
@@ -558,7 +533,6 @@ const firestoreService = {
       
       await updateDoc(appointmentRef, updateData);
       
-      console.log(`Randevu seviyesi güncellendi. ID: ${appointmentId}, Seviye: ${level}`);
       return true;
     } catch (error: any) {
       console.error('Randevu seviyesi güncelleme hatası:', error);
@@ -576,7 +550,6 @@ const firestoreService = {
         const data = snapshot.data();
         callback(data);
       } else {
-        console.log('Randevu bulunamadı');
         callback(null);
       }
     }, (error) => {
@@ -587,10 +560,10 @@ const firestoreService = {
     return unsubscribe;
   },
 
-  // Bir bakıcının hastalarını getir
+  // Bir Kullanıcının hastalarını getir
   getCaregiverPatientsWithProfiles: async (caregiverId: string): Promise<UserProfile[]> => {
     try {
-      // İlk olarak bakıcı-hasta ilişkilerini al
+      // İlk olarak Kullanıcı-hasta ilişkilerini al
       const relationsRef = collection(db, 'caregiverPatientRelations');
       const q = query(
         relationsRef,
@@ -622,7 +595,7 @@ const firestoreService = {
       
       return patientProfiles;
     } catch (error) {
-      console.error("Bakıcının hastalarını getirirken hata oluştu:", error);
+      console.error("Kullanıcının hastalarını getirirken hata oluştu:", error);
       throw error;
     }
   },
@@ -730,6 +703,93 @@ const firestoreService = {
     } catch (error) {
       console.error("Hasta gelecek randevuları sayısı alınırken hata oluştu:", error);
       return 0;
+    }
+  },
+
+  // Randevu pozisyon verilerini getir
+  getAppointmentPositionData: async (appointmentId: string) => {
+    try {
+      const positionRef = doc(db, `appointments/${appointmentId}/position/data`);
+      const docSnap = await getDoc(positionRef);
+      
+      if (docSnap.exists()) {
+        return docSnap.data();
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Pozisyon verileri getirme hatası:', error);
+      throw error;
+    }
+  },
+  
+  // Randevu pozisyon verilerini kaydet
+  saveAppointmentPositionData: async (
+    appointmentId: string, 
+    basketPosition: PositionData, 
+    applePosition: PositionData
+  ) => {
+    try {
+      const positionRef = doc(db, `appointments/${appointmentId}/position/data`);
+      await setDoc(positionRef, {
+        basketPosition,
+        applePosition,
+        updatedAt: serverTimestamp()
+      });
+      
+      console.log(`Pozisyon verileri kaydedildi. Appointment ID: ${appointmentId}`);
+      return true;
+    } catch (error) {
+      console.error('Pozisyon verisi kaydetme hatası:', error);
+      throw error;
+    }
+  },
+  
+  // Sepet pozisyonunu güncelle
+  updateAppointmentBasketPosition: async (appointmentId: string, basketPosition: PositionData) => {
+    try {
+      const positionRef = doc(db, `appointments/${appointmentId}/position/data`);
+      await updateDoc(positionRef, {
+        basketPosition,
+        updatedAt: serverTimestamp()
+      });
+      
+      console.log(`Sepet pozisyonu güncellendi. Appointment ID: ${appointmentId}`);
+      return true;
+    } catch (error) {
+      console.error('Sepet pozisyonu güncelleme hatası:', error);
+      throw error;
+    }
+  },
+  
+  // Elma pozisyonunu güncelle
+  updateAppointmentApplePosition: async (appointmentId: string, applePosition: PositionData) => {
+    try {
+      const positionRef = doc(db, `appointments/${appointmentId}/position/data`);
+      await updateDoc(positionRef, {
+        applePosition,
+        updatedAt: serverTimestamp()
+      });
+      
+      console.log(`Elma pozisyonu güncellendi. Appointment ID: ${appointmentId}`);
+      return true;
+    } catch (error) {
+      console.error('Elma pozisyonu güncelleme hatası:', error);
+      throw error;
+    }
+  },
+  
+  // Pozisyon verilerini sil
+  deleteAppointmentPositionData: async (appointmentId: string) => {
+    try {
+      const positionRef = doc(db, `appointments/${appointmentId}/position/data`);
+      await deleteDoc(positionRef);
+      
+      console.log(`Pozisyon verileri silindi. Appointment ID: ${appointmentId}`);
+      return true;
+    } catch (error) {
+      console.error('Pozisyon verisi silme hatası:', error);
+      throw error;
     }
   },
 };

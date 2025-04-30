@@ -1,16 +1,17 @@
 'use client';
 
+import PasswordInput from '@/components/PasswordInput';
 import ReCaptcha from '@/components/ReCaptcha';
 import { useAuth } from '@/context/AuthContext';
 import authService from '@/lib/services/authService';
 import {
-  faArrowLeft,
-  faEnvelope,
-  faExclamationTriangle,
-  faLock,
-  faUser,
-  faUserInjured,
-  faUserMd
+    faArrowLeft,
+    faEnvelope,
+    faExclamationTriangle,
+    faLock,
+    faUser,
+    faUserInjured,
+    faUserMd
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -67,13 +68,10 @@ export default function RegisterPage() {
   };
 
   const handleCaptchaVerify = (token: string) => {
-    // Herhangi bir token alındıysa veya fallback token ise kabul et
     if (token) {
-      console.log("reCAPTCHA doğrulama başarılı");
       setCaptchaToken(token);
       setIsCaptchaVerified(true);
     } else {
-      console.log("reCAPTCHA doğrulama başarısız");
       setCaptchaToken(null);
       setIsCaptchaVerified(false);
     }
@@ -82,13 +80,10 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    // Form validasyonu
     if (!validateForm()) return;
     
-    // Daha esnek captcha kontrolü
     const hasCaptchaToken = captchaToken !== null;
     
-    // Geliştirme modunda veya token varsa devam et
     if (!hasCaptchaToken && process.env.NODE_ENV !== 'development') {
       setError("Lütfen 'Ben robot değilim' doğrulamasını tamamlayın.");
       return;
@@ -98,7 +93,6 @@ export default function RegisterPage() {
     setError(null);
     
     try {
-      // AuthService ile kayıt ol
       const userData = {
         email,
         password,
@@ -162,7 +156,7 @@ export default function RegisterPage() {
               onChange={(e) => setDisplayName(e.target.value)}
               required
               placeholder="Ad Soyad"
-              className={styles.inputWithIcon}
+              className={styles.emailInput}
             />
           </div>
           
@@ -188,14 +182,12 @@ export default function RegisterPage() {
               <FontAwesomeIcon icon={faLock} className={styles.inputIcon} />
               Şifre
             </label>
-            <input
-              type="password"
+            <PasswordInput
               id="password"
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="En az 6 karakter"
               className={styles.inputWithIcon}
             />
           </div>
@@ -205,14 +197,13 @@ export default function RegisterPage() {
               <FontAwesomeIcon icon={faLock} className={styles.inputIcon} />
               Şifre Tekrar
             </label>
-            <input
-              type="password"
+            <PasswordInput
               id="confirmPassword"
               name="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Şifreyi tekrar girin"
               required
-              placeholder="Şifrenizi tekrar girin"
               className={styles.inputWithIcon}
             />
           </div>
@@ -237,7 +228,7 @@ export default function RegisterPage() {
               >
                 <FontAwesomeIcon icon={faUserMd} className={styles.userTypeIcon} />
                 <div>
-                  <h3>Bakıcı</h3>
+                  <h3>Kullanıcı</h3>
                   <p>Hastaları yönetmek için kayıt olun</p>
                 </div>
               </div>

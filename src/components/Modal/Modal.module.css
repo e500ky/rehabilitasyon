@@ -29,6 +29,13 @@
   align-items: center;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 10;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .modalHeader h2 {

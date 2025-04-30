@@ -12,21 +12,15 @@ Firebase Console > Firestore Database > Rules sekmesinde aşağıdaki güvenlik 
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Kullanıcı profili güvenlik kuralları
     match /users/{userId} {
-      // Kullanıcı sadece kendi belgesini okuyabilir ve yazabilir
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // İstatistikler güvenlik kuralları
     match /stats/{userId} {
-      // Kullanıcı sadece kendi belgesini okuyabilir ve yazabilir
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // İlerleme verileri güvenlik kuralları
     match /progress/{userId} {
-      // Kullanıcı sadece kendi belgesini okuyabilir ve yazabilir
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
   }

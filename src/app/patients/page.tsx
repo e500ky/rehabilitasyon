@@ -7,14 +7,14 @@ import { useAuth } from '@/context/AuthContext';
 import firestoreService from '@/lib/services/firestoreService';
 import { ProgressDataPoint } from '@/types/user';
 import {
-    faCalendarPlus,
-    faExclamationTriangle,
-    faSearch,
-    faSyncAlt,
-    faTimes,
-    faTrashAlt,
-    faUser,
-    faUserPlus
+  faCalendarPlus,
+  faExclamationTriangle,
+  faSearch,
+  faSyncAlt,
+  faTimes,
+  faTrashAlt,
+  faUser,
+  faUserPlus
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -22,7 +22,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import styles from './patients.module.css';
 
-// Hasta veri tipi
 interface PatientData {
   id: string;
   name: string;
@@ -46,7 +45,6 @@ export default function PatientsPage() {
   const [selectedPatient, setSelectedPatient] = useState<PatientData | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
-  // Kullanıcı ve hasta verilerini yükle
   useEffect(() => {
     if (!currentUser) {
       router.push('/oturum-ac');
@@ -60,13 +58,11 @@ export default function PatientsPage() {
         if (profile) {
           setUserProfile(profile);
           
-          // Sadece bakıcı rolünde olanlar bu sayfaya erişebilir
           if (profile.userType !== 'caregiver') {
             router.push('/dashboard');
             return;
           }
           
-          // Bakıcının hastalarını yükle
           loadPatients();
         }
       } catch (err) {
@@ -79,7 +75,6 @@ export default function PatientsPage() {
     loadUserProfile();
   }, [currentUser, router]);
 
-  // Arama filtresi
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredPatients(patients);
@@ -96,7 +91,6 @@ export default function PatientsPage() {
     }
   }, [searchQuery, patients]);
 
-  // Hasta verilerini yükle
   const loadPatients = async () => {
     if (!currentUser) return;
     
@@ -104,11 +98,9 @@ export default function PatientsPage() {
     setError(null);
     
     try {
-      console.log('Hastalar yükleniyor...');
       const loadedPatients = await firestoreService.getCaregiverPatients(currentUser.uid);
       
       if (Array.isArray(loadedPatients)) {
-        // Her hasta için randevu sayısını getir
         const patientsWithAppointments = await Promise.all(
           loadedPatients.map(async (patient) => {
             const upcomingAppointments = await firestoreService.getPatientUpcomingAppointmentsCount(patient.id);
@@ -137,26 +129,20 @@ export default function PatientsPage() {
     }
   };
 
-  // Hasta detaylarını göster
   const handleViewPatient = async (patient: PatientData) => {
     setIsLoading(true);
     
     try {
-      console.log('Hasta detayları yükleniyor:', patient);
       
-      // Hasta için ek verileri yükle
       const stats = await firestoreService.getUserStats(patient.id);
       const progress = await firestoreService.getUserProgress(patient.id);
       
-      // İlerleme değerlerinin ortalamasını hesapla
       let progressAverage = 0;
       if (progress && progress.data && progress.data.length > 0) {
         const progressSum = progress.data.reduce((total: number, point: ProgressDataPoint) => total + point.progress, 0);
         progressAverage = Math.round(progressSum / progress.data.length);
         
-        // Eğer stats null ise bir obje oluştur, değilse mevcut stats'i kullan
         const updatedStats = stats || {};
-        // progressPercentage'ı hesaplanan ortalama değerle güncelle
         updatedStats.progressPercentage = progressAverage;
         
         const detailedPatient = {
@@ -165,17 +151,14 @@ export default function PatientsPage() {
           progress
         };
         
-        console.log('Detaylı hasta verileri:', detailedPatient);
         setSelectedPatient(detailedPatient);
       } else {
-        // İlerleme verisi yoksa mevcut verilerle devam et
         const detailedPatient = {
           ...patient,
           stats,
           progress
         };
         
-        console.log('Detaylı hasta verileri:', detailedPatient);
         setSelectedPatient(detailedPatient);
       }
       
@@ -193,7 +176,6 @@ export default function PatientsPage() {
     setSelectedPatient(null);
   };
 
-  // Hasta-bakıcı ilişkisini silme işlemi
   const handleRemovePatient = async (patient: PatientData) => {
     if (!patient.relationId) {
       alert("Bu hasta için ilişki bilgisi bulunamadı.");
@@ -207,7 +189,6 @@ export default function PatientsPage() {
     try {
       await firestoreService.deleteCaregiverPatientRelation(patient.relationId);
       
-      // Hasta listesinden de kaldır
       setPatients(prev => prev.filter(p => p.id !== patient.id));
       setFilteredPatients(prev => prev.filter(p => p.id !== patient.id));
     
@@ -219,7 +200,6 @@ export default function PatientsPage() {
     }
   };
 
-  // Hasta detay modalı içeriği
   const renderPatientDetailModal = () => {
     if (!selectedPatient) return null;
 

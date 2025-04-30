@@ -36,7 +36,6 @@ export default function PatientDashboard({ userProfile }: PatientDashboardProps)
       
       setProgressData([]);
       
-      // Firestore'dan verileri yükle
       const fetchUserData = async () => {
         try {
           const stats = await firestoreService.getUserStats(currentUser.uid);
@@ -54,7 +53,6 @@ export default function PatientDashboard({ userProfile }: PatientDashboardProps)
           console.error('Veri yükleme hatası:', error);
           setIsDataLoading(false);
           
-          // Hata mesajı göster
           if (error.code === 'permission-denied') {
             setError('Veri yükleme hatası: Erişim izniniz yok. Yöneticiye başvurun.');
           } else {
@@ -91,7 +89,7 @@ export default function PatientDashboard({ userProfile }: PatientDashboardProps)
           </div>
           <div className={styles.statInfo}>
             <h3>Tamamlanan Seanslar</h3>
-            <div className={styles.statValue}>{userStats?.progressPercentage || 0}</div>
+            <div className={styles.statValue}>{userStats?.sessionsCount || 0}</div>
           </div>
         </div>
         
@@ -111,7 +109,7 @@ export default function PatientDashboard({ userProfile }: PatientDashboardProps)
           </div>
           <div className={styles.statInfo}>
             <h3>Başarım Oranı</h3>
-            <div className={styles.statValue}>%{ortalama || 0}</div>
+            <div className={styles.statValue}>%{isNaN(ortalama) ? 0 : ortalama.toFixed(2)}</div>
           </div>
         </div>
         
@@ -122,7 +120,7 @@ export default function PatientDashboard({ userProfile }: PatientDashboardProps)
           <div className={styles.statInfo}>
             <h3>Maksimum Seviye</h3>
             <div className={styles.statValue}>{userStats?.maxLevel || 1}</div>
-            <div className={styles.statSubtext}>(10 seviye arasında)</div>
+            <div className={styles.statSubtext}>(9 seviye arasında)</div>
           </div>
         </div>
       </div>

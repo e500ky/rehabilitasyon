@@ -10,7 +10,6 @@ import styles from './Footer.module.css';
 const Footer: React.FC = () => {
   const { currentUser } = useAuth();
   
-  // Kullanıcı giriş yapmışsa footer'ı gösterme
   if (currentUser) return null;
   
   return (

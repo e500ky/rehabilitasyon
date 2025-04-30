@@ -9,15 +9,16 @@ export interface UserProfile {
 }
 
 export interface UserStats {
-  maxLevel?: number; // Kullanıcının ulaştığı en yüksek seviye
-  totalCollectedApples?: number; // Toplam toplanan elma sayısı  
-  progressPercentage?: number; // İlerleme yüzdesi
+    maxLevel?: number; // Kullanıcının ulaştığı en yüksek seviye
+    totalCollectedApples?: number; // Toplam toplanan elma sayısı  
+    progressPercentage?: number; // İlerleme yüzdesi
+    sessionsCount?: number; // Toplam seans sayısı
 }
 
 export interface ProgressDataPoint {
   date: string;
   progress: number;
-  painLevel: number;
+  rom: number;
 }
 
 export interface ProgressData {

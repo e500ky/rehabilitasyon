@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import firestoreService from '@/lib/services/firestoreService';
 import { AppointmentData, UserProfile } from '@/types/user';
 import {
+  faAppleAlt,
   faCalendar,
   faCalendarCheck,
   faCalendarPlus,
@@ -14,6 +15,8 @@ import {
   faExclamationTriangle,
   faFilter,
   faHourglass,
+  faInfoCircle,
+  faMapMarkedAlt,
   faTrashAlt,
   faUserMd
 } from '@fortawesome/free-solid-svg-icons';
@@ -36,7 +39,6 @@ export default function Randevular() {
   const [selectedLevel, setSelectedLevel] = useState(1);
   const [caregivers, setCaregivers] = useState<{id: string, name: string}[]>([]);
   
-  // Yeni randevu form verileri
   const [newAppointment, setNewAppointment] = useState({
     caregiverId: '',
     caregiverName: '',
@@ -46,23 +48,33 @@ export default function Randevular() {
     notes: ''
   });
 
+  const [basketPosition, setBasketPosition] = useState({
+    x: 0,
+    y: 0,
+    z: 0
+  });
+  
+  const [applePosition, setApplePosition] = useState({
+    x: 0,
+    y: 0,
+    z: 0
+  });
+  
+  const [dynamicConfigured, setDynamicConfigured] = useState(false);
+
   useEffect(() => {
     if (!currentUser) return;
 
     const loadData = async () => {
       try {
-        // Kullanıcı profilini yükle
         const profile = await firestoreService.getUserProfile(currentUser.uid);
         setUserProfile(profile);
 
-        // Randevuları yükle
         let appointmentsList: AppointmentData[] = [];
         
         if (profile?.userType === 'patient') {
-          // Hasta için randevular
           appointmentsList = await firestoreService.getPatientAppointments(currentUser.uid);
           
-          // Bakıcıları yükle
           const relations = await firestoreService.getCaregiverPatients(currentUser.uid);
           const caregiversList = await Promise.all(
             relations.map(async (relation) => {
@@ -75,7 +87,6 @@ export default function Randevular() {
           );
           setCaregivers(caregiversList);
         } else {
-          // Bakıcı için randevular
           appointmentsList = await firestoreService.getCaregiverAppointments(currentUser.uid);
         }
         
@@ -95,15 +106,13 @@ export default function Randevular() {
     if (!currentUser || !userProfile) return;
     
     try {
-      // Seçilen bakıcı bilgilerini al
       const selectedCaregiver = caregivers.find(c => c.id === newAppointment.caregiverId);
       
       if (!selectedCaregiver) {
-        alert('Lütfen bir bakıcı seçin');
+        alert('Lütfen bir Kullanıcı seçin');
         return;
       }
       
-      // Yeni randevu oluştur
       const appointmentData: Omit<AppointmentData, 'id' | 'createdAt' | 'updatedAt'> = {
         patientId: currentUser.uid,
         patientName: userProfile.displayName,
@@ -118,10 +127,8 @@ export default function Randevular() {
         collectedApples: 0
       };
       
-      // Firestore'a ekle
       await firestoreService.createAppointment(appointmentData);
       
-      // Form temizle ve modalı kapat
       setNewAppointment({
         caregiverId: '',
         caregiverName: '',
@@ -132,7 +139,6 @@ export default function Randevular() {
       });
       setShowAddModal(false);
       
-      // Randevuları yeniden yükle
       const updatedAppointments = await firestoreService.getPatientAppointments(currentUser.uid);
       setAppointments(updatedAppointments);
       
@@ -149,7 +155,6 @@ export default function Randevular() {
       try {
         await firestoreService.updateAppointmentStatus(appointmentId, 'cancelled');
         
-        // Listeyi güncelle
         setAppointments(prev => 
           prev.map(appointment => 
             appointment.id === appointmentId 
@@ -165,19 +170,15 @@ export default function Randevular() {
     }
   };
 
-  // Seviye değişikliklerini anında Firebase'e gönderen fonksiyon
   const handleLevelChange = async (level: number) => {
     if (!selectedAppointment) return;
     
     try {
-      // Firebase'e seviye güncellemesini anında gönder
       await firestoreService.updateAppointmentLevel(selectedAppointment.id, level);
       
-      // State'leri güncelle
       setSelectedLevel(level);
       setSelectedAppointment(prev => prev ? {...prev, currentLevel: level} : null);
       
-      // Genel randevu listesini güncelle
       setAppointments(prev => 
         prev.map(appointment => 
           appointment.id === selectedAppointment.id 
@@ -186,44 +187,90 @@ export default function Randevular() {
         )
       );
       
+      if (level === 9) {
+        try {
+          const positionData = await firestoreService.getAppointmentPositionData(selectedAppointment.id);
+          
+          if (positionData) {
+            setBasketPosition(positionData.basketPosition || { x: 0, y: 0, z: 0 });
+            setApplePosition(positionData.applePosition || { x: 0, y: 0, z: 0 });
+            setDynamicConfigured(true);
+          } else {
+            setBasketPosition({ x: 0, y: 0, z: 0 });
+            setApplePosition({ x: 0, y: 0, z: 0 });
+            
+            await firestoreService.saveAppointmentPositionData(
+              selectedAppointment.id, 
+              { x: 0, y: 0, z: 0 }, 
+              { x: 0, y: 0, z: 0 }
+            );
+            
+            setDynamicConfigured(true);
+          }
+        } catch (error) {
+          console.error("Pozisyon verisi yüklenirken hata:", error);
+        }
+      } else if (dynamicConfigured) {
+        await firestoreService.deleteAppointmentPositionData(selectedAppointment.id);
+        setDynamicConfigured(false);
+      }
+      
     } catch (err) {
       console.error("Seviye güncelleme hatası:", err);
       alert("Seviye güncellenirken bir hata oluştu.");
     }
   };
+  
+  const handleBasketPositionChange = async (axis: 'x' | 'y' | 'z', value: string) => {
+    if (!selectedAppointment || selectedLevel !== 9) return;
+    
+    const numValue = parseInt(value) || 0;
+    const newBasketPosition = { ...basketPosition, [axis]: numValue };
+    setBasketPosition(newBasketPosition);
+    
+    try {
+      await firestoreService.updateAppointmentBasketPosition(selectedAppointment.id, newBasketPosition);
+    } catch (error) {
+      console.error("Sepet pozisyonu güncellenirken hata:", error);
+    }
+  };
+  
+  const handleApplePositionChange = async (axis: 'x' | 'y' | 'z', value: string) => {
+    if (!selectedAppointment || selectedLevel !== 9) return;
+    
+    const numValue = parseInt(value) || 0;
+    const newApplePosition = { ...applePosition, [axis]: numValue };
+    setApplePosition(newApplePosition);
+    
+    try {
+      await firestoreService.updateAppointmentApplePosition(selectedAppointment.id, newApplePosition);
+    } catch (error) {
+      console.error("Elma pozisyonu güncellenirken hata:", error);
+    }
+  };
 
-  // Randevu başlatma işlemi - seansı hemen başlat
   const handleStartAppointment = async (appointment: AppointmentData) => {
     try {
-      // Önce güncel randevu verilerini Firebase'den al
       const updatedAppointmentData = await firestoreService.getAppointment(appointment.id);
       
-      // Eğer randevu daha önce başlatıldıysa, mevcut verileri kullan
-      // Firebase'den alınan verileri öncelikli olarak kullan, yoksa appointment'taki verileri al
       const currentLevel = updatedAppointmentData?.currentLevel || appointment.currentLevel || 1;
       
-      // Toplanan elma sayısını Firebase'ten al, yoksa mevcut değeri kullan
       const collectedApples = updatedAppointmentData?.collectedApples !== undefined ? 
         updatedAppointmentData.collectedApples : 
         appointment.collectedApples || 0;
       
-      console.log("Randevu verileri:", { currentLevel, collectedApples, updatedAppointmentData });
       
-      // Randevuyu accepted olarak işaretle (eğer pending durumundaysa)
       if (appointment.status === 'pending') {
-        // Eğer yeni başlatılıyorsa elma sayısını sıfırlama, mevcut değeri kullan
         await firestoreService.startAppointment(appointment.id, currentLevel, collectedApples);
       } else {
-        // Eğer devam ediyorsa, sadece seviyeyi güncelle, elma sayısını değiştirme
         await firestoreService.updateAppointmentLevel(appointment.id, currentLevel, collectedApples);
       }
       
-      // State'i güncelle - collectedApples değerini koru
       const updatedAppointment = { 
         ...appointment, 
         status: 'accepted', 
         currentLevel: currentLevel,
-        collectedApples: collectedApples  // Toplanan elma sayısını koru
+        collectedApples: collectedApples  
       };
       
       setAppointments(prev => 
@@ -234,12 +281,10 @@ export default function Randevular() {
         )
       );
       
-      // Modalı açmak için state'i ayarla
       setSelectedAppointment(updatedAppointment);
       setSelectedLevel(currentLevel);
       setShowStartModal(true);
       
-      // Başlatıldıktan sonra, randevu verilerini anlık dinlemeye başla
       startListeningToAppointmentData(appointment.id);
     } catch (err) {
       console.error("Randevu başlatma hatası:", err);
@@ -247,14 +292,11 @@ export default function Randevular() {
     }
   };
   
-  // Firebase'den randevu verilerini anlık dinle
   const startListeningToAppointmentData = (appointmentId: string) => {
-    // Firebase'den anlık güncellemeleri dinle
     const unsubscribe = firestoreService.listenToAppointmentChanges(
       appointmentId,
       (updatedData) => {
         if (updatedData) {
-          // Seçili randevu state'ini güncelle
           setSelectedAppointment(prevAppt => {
             if (prevAppt && prevAppt.id === appointmentId) {
               return {
@@ -266,7 +308,6 @@ export default function Randevular() {
             return prevAppt;
           });
           
-          // Genel randevu listesini de güncelle
           setAppointments(prevAppts => {
             return prevAppts.map(appt => 
               appt.id === appointmentId 
@@ -282,26 +323,21 @@ export default function Randevular() {
       }
     );
     
-    // Modal kapatıldığında dinlemeyi sonlandır
     return unsubscribe;
   };
   
-  // Randevuyu tamamla
   const handleCompleteSession = async () => {
     if (!selectedAppointment || !currentUser || userProfile?.userType !== 'caregiver') return;
     
     try {
-      // Randevuyu tamamlandı olarak işaretle
       await firestoreService.updateAppointmentStatus(selectedAppointment.id, 'completed');
       
-      // Hasta stats'ini güncelle
       await firestoreService.updateUserStatsOnCompletion(
         selectedAppointment.patientId, 
         selectedAppointment.currentLevel || 1, 
         selectedAppointment.collectedApples || 0
       );
       
-      // Listeyi güncelle
       setAppointments(prev => 
         prev.map(appointment => 
           appointment.id === selectedAppointment.id 
@@ -310,7 +346,6 @@ export default function Randevular() {
         )
       );
       
-      // Modalı kapat
       setShowStartModal(false);
       setSelectedAppointment(null);
       
@@ -320,16 +355,13 @@ export default function Randevular() {
     }
   };
   
-  // Randevu silme işlemi
   const handleDeleteAppointment = async (appointmentId: string) => {
     if (!currentUser) return;
     
     if (window.confirm('Bu randevuyu kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
       try {
-        // Randevu silme işlemi
         await firestoreService.deleteAppointment(appointmentId);
         
-        // State'i güncelle - silinen randevuyu kaldır
         setAppointments(prev => prev.filter(appointment => appointment.id !== appointmentId));
         
       } catch (err) {
@@ -339,7 +371,6 @@ export default function Randevular() {
     }
   };
 
-  // Randevu filtreleme
   const filteredAppointments = appointments.filter(appointment => {
     const appointmentDate = parseISO(appointment.date);
     
@@ -358,17 +389,13 @@ export default function Randevular() {
     return true;
   });
 
-  // Tarihe göre sıralama
   const sortedAppointments = [...filteredAppointments].sort((a, b) => {
-    // Tarihleri karşılaştır
     const dateComparison = new Date(a.date).getTime() - new Date(b.date).getTime();
     if (dateComparison !== 0) return dateComparison;
     
-    // Tarihler aynıysa saatleri karşılaştır
     return a.time.localeCompare(b.time);
   });
 
-  // Randevu durumuna göre renk
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return styles.pending;
@@ -379,7 +406,6 @@ export default function Randevular() {
     }
   };
 
-  // Durum etiketi
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'pending': return 'Bekliyor';
@@ -390,7 +416,6 @@ export default function Randevular() {
     }
   };
 
-  // Durum ikonu
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending': return faHourglass;
@@ -401,9 +426,7 @@ export default function Randevular() {
     }
   };
 
-  // Randevuya ara verme fonksiyonu
   const handlePauseSession = () => {
-    // Sadece modalı kapat, randevu durumunu değiştirme
     setShowStartModal(false);
   };
   
@@ -615,7 +638,7 @@ export default function Randevular() {
         <Modal title="Randevu Talebi Oluştur" onClose={() => setShowAddModal(false)}>
           <div className={styles.appointmentForm}>
             <div className={styles.formGroup}>
-              <label>Bakıcı</label>
+              <label>Kullanıcı</label>
               <select 
                 value={newAppointment.caregiverId}
                 onChange={(e) => setNewAppointment({
@@ -625,7 +648,7 @@ export default function Randevular() {
                 })}
                 required
               >
-                <option value="">-- Bakıcı Seçin --</option>
+                <option value="">-- Kullanıcı Seçin --</option>
                 {caregivers.map(caregiver => (
                   <option key={caregiver.id} value={caregiver.id}>
                     {caregiver.name}
@@ -756,6 +779,11 @@ export default function Randevular() {
                       className={`${styles.levelBox} ${level === selectedLevel ? styles.selectedLevel : ''}`}
                       onClick={() => handleLevelChange(level)}
                     >
+                      <FontAwesomeIcon 
+                        icon={faInfoCircle} 
+                        className={styles.levelInfoIcon}
+                        title={`Seviye ${level} hakkında bilgi`}
+                      />
                       <span className={styles.levelNumber}>{level}</span>
                       <span className={styles.levelText}>
                         {level == 9 ? "Dinamik": null}
@@ -764,6 +792,167 @@ export default function Randevular() {
                   ))}
                 </div>
               </div>
+              
+              {/* Dinamik Seviye (9) için pozisyon ayarları */}
+              {selectedLevel === 9 && (
+                <div className={styles.dynamicLevelSettings}>
+                  <h4 className={styles.dynamicSettingsTitle}>
+                    <FontAwesomeIcon icon={faMapMarkedAlt} /> 
+                    Dinamik Konum Ayarları
+                  </h4>
+                  <p className={styles.dynamicSettingsDescription}>
+                    Sepet ve elma için konum değerlerini belirleyin. Bu değerler VR uygulamasında doğrudan uygulanacaktır.
+                  </p>
+                  
+                  <div className={styles.positionGroups}>
+                    {/* Sepet Pozisyonu */}
+                    <div className={styles.positionGroup}>
+                      <div className={styles.positionHeader}>
+                        <FontAwesomeIcon icon={faMapMarkedAlt} className={styles.positionIcon} />
+                        <h5>Sepet Konumu</h5>
+                      </div>
+                      <div className={styles.positionInputs}>
+                        <div className={styles.positionInput}>
+                          <label>X: [-3,3]</label>
+                          <input
+                            type="number"
+                            value={basketPosition.x}
+                            onChange={(e) => {
+                              handleBasketPositionChange('x', e.target.value)
+                              if (parseInt(e.target.value) > 3) {
+                                setBasketPosition({ ...basketPosition, x: 3 });
+                              } else if (parseInt(e.target.value) < -3) {
+                                setBasketPosition({ ...basketPosition, x: -3 });
+                              } else {
+                                setBasketPosition({ ...basketPosition, x: parseInt(e.target.value) });
+                              }
+                              if (e.target.value === "")
+                                setBasketPosition({ ...basketPosition, x: 0 });
+                            }}
+                            min="-3"
+                            max="3"
+                          />
+                        </div>
+                        <div className={styles.positionInput}>
+                          <label>Y: [0,3]</label>
+                          <input
+                            type="number"
+                            value={basketPosition.y}
+                            onChange={(e) => {
+                              handleBasketPositionChange('y', e.target.value)
+                              if (parseInt(e.target.value) > 3) {
+                                setBasketPosition({ ...basketPosition, y: 3 });
+                              } else if (parseInt(e.target.value) < 0) {
+                                setBasketPosition({ ...basketPosition, y: 0 });
+                              } else {
+                                setBasketPosition({ ...basketPosition, y: parseInt(e.target.value) });
+                              }
+                              if (e.target.value === "")
+                                setBasketPosition({ ...basketPosition, y: 0 });
+                            }}
+                            min="0"
+                            max="3"
+                          />
+                        </div>
+                        <div className={styles.positionInput}>
+                          <label>Z: [-3,3]</label>
+                          <input
+                            type="number"
+                            value={basketPosition.z}
+                            onChange={(e) => {
+                              handleBasketPositionChange('z', e.target.value)
+                              if (parseInt(e.target.value) > 3) {
+                                setBasketPosition({ ...basketPosition, z: 3 });
+                              } else if (parseInt(e.target.value) < -3) {
+                                setBasketPosition({ ...basketPosition, z: -3 });
+                              } else {
+                                setBasketPosition({ ...basketPosition, z: parseInt(e.target.value) });
+                              }
+                              if (e.target.value === "")
+                                setBasketPosition({ ...basketPosition, z: 0 });
+                            }}
+                            min="-3"
+                            max="3"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Elma Pozisyonu */}
+                    <div className={styles.positionGroup}>
+                      <div className={styles.positionHeader}>
+                        <FontAwesomeIcon icon={faAppleAlt} className={styles.positionIcon} />
+                        <h5>Elma Konumu</h5>
+                      </div>
+                      <div className={styles.positionInputs}>
+                        <div className={styles.positionInput}>
+                          <label>X: [-3,3]</label>
+                          <input
+                            type="number"
+                            value={applePosition.x}
+                            onChange={(e) => {
+                              handleApplePositionChange('x', e.target.value)
+                              if (parseInt(e.target.value) > 3) {
+                                setApplePosition({ ...applePosition, x: 3 });
+                              } else if (parseInt(e.target.value) < -3) {
+                                setApplePosition({ ...applePosition, x: -3 });
+                              } else {
+                                setApplePosition({ ...applePosition, x: parseInt(e.target.value) });
+                              }
+                              if (e.target.value === "")
+                                setApplePosition({ ...applePosition, x: 0 });
+                            }}
+                            min="-3"
+                            max="3"
+                          />
+                        </div>
+                        <div className={styles.positionInput}>
+                          <label>Y: [0,3]</label>
+                          <input
+                            type="number"
+                            value={applePosition.y}
+                            onChange={(e) => {
+                              handleApplePositionChange('y', e.target.value)
+                              if (parseInt(e.target.value) > 3) {
+                                setApplePosition({ ...applePosition, y: 3 });
+                              } else if (parseInt(e.target.value) < 0) {
+                                setApplePosition({ ...applePosition, y: 0 });
+                              } else {
+                                setApplePosition({ ...applePosition, y: parseInt(e.target.value) });
+                              }
+                              if (e.target.value === "")
+                                setApplePosition({ ...applePosition, z: 0 }); 
+                            }}
+                            min="0"
+                            max="3"
+                          />
+                        </div>
+                        <div className={styles.positionInput}>
+                          <label>Z: [-3,3]</label>
+                          <input
+                            type="number"
+                            value={applePosition.z}
+                            onChange={(e) => {
+                              handleApplePositionChange('z', e.target.value)
+                              if (parseInt(e.target.value) > 3) {
+                                setApplePosition({ ...applePosition, z: 3 });
+                              } else if (parseInt(e.target.value) < -3) {
+                                setApplePosition({ ...applePosition, z: -3 });
+                              } else {
+                                setApplePosition({ ...applePosition, z: parseInt(e.target.value) });
+                              }
+                              if (e.target.value === "")
+                                setApplePosition({ ...applePosition, z: 0 }); 
+                            }}
+                            min="-3"
+                            max="3"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             
             {/* Alt Bilgi Bölümü */}

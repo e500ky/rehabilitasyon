@@ -35,7 +35,6 @@ export default function CreateAppointmentPage() {
   const [success, setSuccess] = useState(false);
   
   useEffect(() => {
-    // Hasta ID'si yoksa randevular sayfasına yönlendir
     if (!patientId) {
       router.push('/randevular');
     }
@@ -58,10 +57,8 @@ export default function CreateAppointmentPage() {
     setError(null);
     
     try {
-      // Firebase Timestamp için tarihi ve saati birleştir
       const appointmentDateTime = `${date}T${time}:00`;
       
-      // Bakıcı adını alabilmek için bakıcı profilini getir
       let caregiverName = '';
       try {
         const caregiverProfile = await firestoreService.getUserProfile(currentUser.uid);
@@ -69,26 +66,24 @@ export default function CreateAppointmentPage() {
           caregiverName = caregiverProfile.displayName || '';
         }
       } catch (err) {
-        console.warn('Bakıcı profili alınamadı:', err);
+        console.warn('Kullanıcı profili alınamadı:', err);
       }
       
       const appointmentData = {
         patientId,
         patientName: decodeURIComponent(patientName),
         caregiverId: currentUser.uid,
-        caregiverName, // Bakıcının adını ekle
+        caregiverName, 
         date: appointmentDateTime,
         location,
         notes: notes || '',
-        status: 'pending' // Varsayılan randevu durumu
+        status: 'pending' 
       };
       
-      // Randevu oluştur
       await firestoreService.createAppointment(appointmentData);
       
       setSuccess(true);
       
-      // 2 saniye sonra randevular sayfasına yönlendir
       setTimeout(() => {
         router.push('/randevular');
       }, 2000);
@@ -101,7 +96,6 @@ export default function CreateAppointmentPage() {
     }
   };
   
-  // Yarın tarihini al (minimum seçilebilir tarih için)
   const getTomorrowDate = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);

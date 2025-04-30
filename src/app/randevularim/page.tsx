@@ -5,14 +5,14 @@ import { useAuth } from '@/context/AuthContext';
 import firestoreService from '@/lib/services/firestoreService';
 import { formatDate } from '@/utils/formatters';
 import {
-    faCalendarAlt,
-    faClock,
-    faExclamationTriangle,
-    faLocationDot,
-    faSearch,
-    faSyncAlt,
-    faTimes,
-    faUser
+  faCalendarAlt,
+  faClock,
+  faExclamationTriangle,
+  faLocationDot,
+  faSearch,
+  faSyncAlt,
+  faTimes,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from 'next/navigation';
@@ -51,7 +51,6 @@ export default function PatientAppointmentsPage() {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
-  // Kullanıcı kontrolü ve randevuları yükleme
   useEffect(() => {
     if (!currentUser) {
       router.push('/oturum-ac');
@@ -61,17 +60,14 @@ export default function PatientAppointmentsPage() {
     loadAppointments();
   }, [currentUser, router]);
   
-  // Arama ve filtreleme işlemleri
   useEffect(() => {
     if (appointments.length > 0) {
       let filtered = [...appointments];
       
-      // Durum filtreleme
       if (filterStatus !== 'all') {
         filtered = filtered.filter(appointment => appointment.status === filterStatus);
       }
       
-      // Arama filtreleme
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
         filtered = filtered.filter(appointment => {
@@ -95,15 +91,11 @@ export default function PatientAppointmentsPage() {
     setError(null);
     
     try {
-      // Hasta olarak kendi randevularını getir
       const appointmentsData = await firestoreService.getPatientAppointments(currentUser.uid);
-      console.log('Randevular yüklendi:', appointmentsData);
       
-      // Randevuların bakıcı bilgilerini yükle
       const caregiverIds = [...new Set(appointmentsData.map(appt => appt.caregiverId))];
       const caregiversData: Record<string, any> = {};
       
-      // Her bakıcının bilgilerini al
       await Promise.all(caregiverIds.map(async (id) => {
         try {
           const profile = await firestoreService.getUserProfile(id);
@@ -111,13 +103,12 @@ export default function PatientAppointmentsPage() {
             caregiversData[id] = profile;
           }
         } catch (err) {
-          console.error(`Bakıcı bilgileri alınamadı (${id}):`, err);
+          console.error(`Kullanıcı bilgileri alınamadı (${id}):`, err);
         }
       }));
       
       setCaregivers(caregiversData);
       
-      // Randevuları tarih sırasına göre sırala (en yakın önce)
       const sortedAppointments = appointmentsData
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
       
@@ -164,7 +155,7 @@ export default function PatientAppointmentsPage() {
         <div className={styles.header}>
           <div className={styles.title}>
             <h1>Randevularım</h1>
-            <p className={styles.subtitle}>Bakıcılarınızla olan randevularınızı görüntüleyin ve yönetin</p>
+            <p className={styles.subtitle}>Kullanıcılarınızla olan randevularınızı görüntüleyin ve yönetin</p>
           </div>
           <button
             className={styles.refreshButton}
@@ -188,7 +179,7 @@ export default function PatientAppointmentsPage() {
             <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
             <input
               type="text"
-              placeholder="Bakıcı, tarih veya konum ara..."
+              placeholder="Kullanıcı, tarih veya konum ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={styles.searchInput}
@@ -231,7 +222,7 @@ export default function PatientAppointmentsPage() {
             <p>
               {searchQuery || filterStatus !== 'all'
                 ? 'Arama kriterlerinize uygun randevu bulunamadı.'
-                : 'Henüz bakıcılarınız tarafından oluşturulmuş bir randevunuz bulunmuyor.'}
+                : 'Henüz Kullanıcılarınız tarafından oluşturulmuş bir randevunuz bulunmuyor.'}
             </p>
           </div>
         ) : (
@@ -265,7 +256,7 @@ export default function PatientAppointmentsPage() {
                   
                   <div className={styles.appointmentDetail}>
                     <FontAwesomeIcon icon={faUser} />
-                    <span>Bakıcı: {getCaregiverName(appointment.caregiverId)}</span>
+                    <span>Kullanıcı: {getCaregiverName(appointment.caregiverId)}</span>
                   </div>
                 </div>
                 
@@ -328,7 +319,7 @@ export default function PatientAppointmentsPage() {
                 <div className={styles.detailItem}>
                   <div className={styles.detailLabel}>
                     <FontAwesomeIcon icon={faUser} />
-                    <span>Bakıcı</span>
+                    <span>Kullanıcı</span>
                   </div>
                   <div className={styles.detailValue}>
                     {getCaregiverName(selectedAppointment.caregiverId)}

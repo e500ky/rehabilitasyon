@@ -60,7 +60,7 @@ export default function Home() {
                 </div>
                 <h3>Elma Toplama Oyunu</h3>
                 <p>Havada süzülen renkli elmaları yakalayıp doğru sepetlere yerleştirerek el-göz koordinasyonu ve motor becerilerinizi geliştirin.</p>
-                <a href="/oyun-detay" className={styles.serviceLink}>Detaylar</a>
+                <a href="/" className={styles.serviceLink}>Detaylar</a>
               </div>
               
               <div className={styles.serviceCard}>
@@ -69,7 +69,7 @@ export default function Home() {
                 </div>
                 <h3>Oyunlaştırılmış Terapi</h3>
                 <p>Zorluk seviyeleri ile rehabilitasyon sürecini eğlenceli ve motive edici hale getirin.</p>
-                <a href="/oyunlastirma" className={styles.serviceLink}>Detaylar</a>
+                <a href="/" className={styles.serviceLink}>Detaylar</a>
               </div>
               
               <div className={styles.serviceCard}>
@@ -78,7 +78,7 @@ export default function Home() {
                 </div>
                 <h3>Nöroplastisite Desteği</h3>
                 <p>Beyin ve sinir sistemi rehabilitasyonu için özel tasarlanmış etkinliklerle iyileşme sürecini hızlandırın.</p>
-                <a href="/bilimsel-temel" className={styles.serviceLink}>Detaylar</a>
+                <a href="/" className={styles.serviceLink}>Detaylar</a>
               </div>
             </div>
           </section>
@@ -166,7 +166,7 @@ export default function Home() {
                   <p>"Klinik ortamında kullandığımız VR rehabilitasyon sistemi, hastaların motivasyonunu artırıyor ve iyileşme sürecini yaklaşık %40 hızlandırıyor."</p>
                 </div>
                 <div className={styles.testimonialAuthor}>
-                  <h4>Dr. Mehmet A.</h4>
+                  <h4>Uzman Dr. Erdem Enes Ö.</h4>
                   <p>Nöroloji Uzmanı</p>
                 </div>
               </div>

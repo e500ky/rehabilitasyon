@@ -42,13 +42,9 @@ export default function Iletisim() {
     setError(null);
     
     try {
-      // Form verilerini gönderme işlemi simüle ediliyor
-      // Gerçek bir uygulamada burada bir API çağrısı yapılır
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      console.log('Form gönderildi:', formData);
       
-      // Form başarılı şekilde gönderildi
       setIsSubmitted(true);
       setFormData({
         name: '',

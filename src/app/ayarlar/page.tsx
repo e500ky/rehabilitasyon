@@ -1,279 +1,353 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import PasswordInput from '@/components/PasswordInput';
 import { useAuth } from '@/context/AuthContext';
-import {
-  faExclamationTriangle,
-  faLock,
-  faQuestionCircle,
-  faSave,
-  faShieldAlt,
-  faUser
-} from '@fortawesome/free-solid-svg-icons';
+import firestoreService from '@/lib/services/firestoreService';
+import { faCheck, faExclamationTriangle, faLock, faSave, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './ayarlar.module.css';
 
-export default function Ayarlar() {
-  const { currentUser, loading } = useAuth();
+export default function Settings() {
+  const { currentUser, updateEmail, updatePassword, reloadUser } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('profile');
+  
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [generalSuccess, setGeneralSuccess] = useState<string | null>(null);
+  const [generalError, setGeneralError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
-    name: currentUser?.displayName || '',
-    email: currentUser?.email || '',
-    phone: '',
+    displayName: '',
+    phoneNumber: '',
+    email: ''
+  });
+
+  const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
-    confirmPassword: '',
-    emailNotifications: true,
-    smsNotifications: false,
-    language: 'tr',
+    confirmPassword: ''
   });
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
 
-  React.useEffect(() => {
-    if (!loading && !currentUser) {
+  useEffect(() => {
+    if (!currentUser) {
       router.push('/oturum-ac');
-    }
-  }, [currentUser, loading, router]);
-
-  if (loading || !currentUser) {
-    return (
-      <div className={styles.loading}>
-        <p>Yükleniyor...</p>
-      </div>
-    );
-  }
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-    setSuccess('');
-    setError('');
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target as HTMLInputElement;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
-    });
-  };
-
-  const handleProfileSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSuccess('Profil bilgileriniz başarıyla güncellendi.');
-    setError('');
-    // Gerçek bir uygulamada burada kullanıcı bilgileri güncellenecek
-  };
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (formData.newPassword !== formData.confirmPassword) {
-      setError('Yeni şifreler eşleşmiyor.');
-      setSuccess('');
       return;
     }
-    setSuccess('Şifreniz başarıyla değiştirildi.');
-    setError('');
-    // Gerçek bir uygulamada burada şifre değişikliği yapılacak
+
+    const loadUserProfile = async () => {
+      try {
+        const profile = await firestoreService.getUserProfile(currentUser.uid);
+        if (profile) {
+          setUserProfile(profile);
+          setFormData({
+            displayName: profile.displayName || '',
+            phoneNumber: profile.phoneNumber || '',
+            email: currentUser.email || ''
+          });
+        }
+      } catch (error) {
+        console.error('Profil yüklenirken hata:', error);
+        setGeneralError('Kullanıcı profili yüklenirken bir hata oluştu.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUserProfile();
+  }, [currentUser, router]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleNotificationsSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSuccess('Bildirim ayarlarınız güncellendi.');
-    setError('');
-    // Gerçek bir uygulamada burada bildirim ayarları güncellenecek
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleLanguageSubmit = (e: React.FormEvent) => {
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+    
+    if (value.startsWith('0')) {
+      value = value.substring(1);
+    }
+    
+    if (value.length <= 10) {
+      let formattedValue = value;
+      
+      if (value.length > 0) {
+        formattedValue = '(' + formattedValue;
+      }
+      
+      if (value.length > 3) {
+        formattedValue = formattedValue.substring(0, 4) + ') ' + formattedValue.substring(4);
+      }
+      
+      if (value.length > 6) {
+        formattedValue = formattedValue.substring(0, 9) + ' ' + formattedValue.substring(9);
+      }
+      
+      if (value.length > 8) {
+        formattedValue = formattedValue.substring(0, 12) + ' ' + formattedValue.substring(12);
+      }
+      
+      setFormData(prev => ({ ...prev, phoneNumber: formattedValue }));
+    }
+  };
+
+  const validateProfileForm = () => {
+    if (!formData.displayName.trim()) {
+      setGeneralError('Ad Soyad boş olamaz.');
+      return false;
+    }
+    
+    if (!formData.email.trim()) {
+      setGeneralError('E-posta adresi boş olamaz.');
+      return false;
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setGeneralError('Geçerli bir e-posta adresi giriniz.');
+      return false;
+    }
+    
+    return true;
+  };
+
+  const validatePasswordForm = () => {
+    if (!passwordData.currentPassword) {
+      setPasswordError('Mevcut şifrenizi giriniz.');
+      return false;
+    }
+    
+    if (passwordData.newPassword.length < 6) {
+      setPasswordError('Yeni şifre en az 6 karakter olmalıdır.');
+      return false;
+    }
+    
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordError('Şifreler eşleşmiyor.');
+      return false;
+    }
+    
+    return true;
+  };
+
+  const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSuccess('Dil tercihiniz güncellendi.');
-    setError('');
-    // Gerçek bir uygulamada burada dil tercihi güncellenecek
+    
+    setGeneralSuccess(null);
+    setGeneralError(null);
+    
+    setIsLoading(true);
+    
+    try {
+      const cleanedPhoneNumber = formData.phoneNumber.replace(/\D/g, '');
+      
+      const profileUpdates = {
+        phoneNumber: formData.phoneNumber
+      };
+      
+      await firestoreService.updateUserProfile(currentUser.uid, profileUpdates);
+      
+      setGeneralSuccess('Profil bilgileriniz başarıyla güncellendi.');
+      
+    } catch (error: any) {
+      console.error('Profil güncelleme hatası:', error);
+      setGeneralError('Profil güncellenirken bir hata oluştu: ' + error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePasswordUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    setPasswordSuccess(null);
+    setPasswordError(null);
+    
+    if (!validatePasswordForm()) return;
+    
+    setIsLoading(true);
+    
+    try {
+      await updatePassword(passwordData.currentPassword, passwordData.newPassword);
+      
+      setPasswordSuccess('Şifreniz başarıyla güncellendi.');
+      
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+    } catch (error: any) {
+      console.error('Şifre güncelleme hatası:', error);
+      
+      if (error.code === 'auth/wrong-password') {
+        setPasswordError('Mevcut şifreniz yanlış.');
+      } else if (error.code === 'auth/requires-recent-login') {
+        setPasswordError('Bu işlem için yeniden giriş yapmanız gerekmektedir. Lütfen çıkış yapıp tekrar giriş yapınız.');
+      } else {
+        setPasswordError('Şifre güncellenirken bir hata oluştu.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <DashboardLayout>
-      <div className={styles.ayarlarContainer}>
-        <div className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Ayarlar</h1>
-        </div>
-        
-        <div className={styles.settingsContent}>
-          <div className={styles.settingsTabs}>
-            <button 
-              className={`${styles.tabButton} ${activeTab === 'profile' ? styles.active : ''}`}
-              onClick={() => handleTabChange('profile')}
-            >
-              <FontAwesomeIcon icon={faUser} className={styles.tabIcon} />
-              Profil
-            </button>
-            <button 
-              className={`${styles.tabButton} ${activeTab === 'password' ? styles.active : ''}`}
-              onClick={() => handleTabChange('password')}
-            >
-              <FontAwesomeIcon icon={faLock} className={styles.tabIcon} />
-              Şifre
-            </button>
-            <button 
-              className={`${styles.tabButton} ${activeTab === 'help' ? styles.active : ''}`}
-              onClick={() => handleTabChange('help')}
-            >
-              <FontAwesomeIcon icon={faQuestionCircle} className={styles.tabIcon} />
-              Yardım
-            </button>
-          </div>
+      <div className={styles.settingsContainer}>
+        <h1 className={styles.settingsTitle}>Hesap Ayarları</h1>
+
+        <div className={styles.settingsSection}>
+          <h2 className={styles.sectionTitle}>
+            <FontAwesomeIcon icon={faUser} className={styles.sectionIcon} />
+            Profil Bilgileri
+          </h2>
           
-          <div className={styles.settingsPanel}>
-            {success && (
-              <div className={styles.successMessage}>
-                {success}
-              </div>
-            )}
+          {generalSuccess && (
+            <div className={styles.successMessage}>
+              <FontAwesomeIcon icon={faCheck} />
+              <p>{generalSuccess}</p>
+            </div>
+          )}
+          
+          {generalError && (
+            <div className={styles.errorMessage}>
+              <FontAwesomeIcon icon={faExclamationTriangle} />
+              <p>{generalError}</p>
+            </div>
+          )}
+          
+          <form onSubmit={handleProfileUpdate} className={styles.settingsForm}>
+            <div className={styles.formGroup}>
+              <label htmlFor="displayName">Ad Soyad</label>
+              <input
+                type="text"
+                id="displayName"
+                name="displayName"
+                value={formData.displayName}
+                onChange={handleInputChange}
+                placeholder="Ad Soyad"
+                disabled={true}
+                className={styles.disabledInput}
+              />
+              <small className={styles.inputNote}>Ad soyad değiştirilemez. Yöneticiniz ile iletişime geçin.</small>
+            </div>
             
-            {error && (
-              <div className={styles.errorMessage}>
-                <FontAwesomeIcon icon={faExclamationTriangle} className={styles.errorIcon} />
-                {error}
-              </div>
-            )}
+            <div className={styles.formGroup}>
+              <label htmlFor="email">E-posta Adresi</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="E-posta"
+                disabled={true}
+                className={styles.disabledInput}
+              />
+              <small className={styles.inputNote}>E-posta adresi değiştirilemez. Yöneticiniz ile iletişime geçin.</small>
+            </div>
             
-            {activeTab === 'profile' && (
-              <form onSubmit={handleProfileSubmit} className={styles.settingsForm}>
-                <h2 className={styles.panelTitle}>Profil Bilgileri</h2>
-                
-                <div className={styles.formGroup}>
-                  <label htmlFor="name">Ad Soyad</label>
-                  <input 
-                    type="text" 
-                    id="name" 
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                
-                <div className={styles.formGroup}>
-                  <label htmlFor="email">E-posta</label>
-                  <input 
-                    type="email" 
-                    id="email" 
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    disabled
-                  />
-                  <p className={styles.fieldHelp}>E-posta adresi değiştirilemez.</p>
-                </div>
-                
-                <div className={styles.formGroup}>
-                  <label htmlFor="phone">Telefon</label>
-                  <input 
-                    type="tel" 
-                    id="phone" 
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="(___) ___ __ __"
-                  />
-                </div>
-                
-                <button type="submit" className={styles.submitButton}>
-                  <FontAwesomeIcon icon={faSave} className={styles.buttonIcon} />
-                  Değişiklikleri Kaydet
-                </button>
-              </form>
-            )}
+            <div className={styles.formGroup}>
+              <label htmlFor="phoneNumber">Telefon Numarası (İsteğe bağlı)</label>
+              <input
+                type="tel"
+                id="phoneNumber"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handlePhoneChange}
+                placeholder="(5XX) XXX XX XX"
+              />
+            </div>
             
-            {activeTab === 'password' && (
-              <form onSubmit={handlePasswordSubmit} className={styles.settingsForm}>
-                <h2 className={styles.panelTitle}>Şifre Değiştir</h2>
-                
-                <div className={styles.formGroup}>
-                  <label htmlFor="currentPassword">Mevcut Şifre</label>
-                  <input 
-                    type="password" 
-                    id="currentPassword" 
-                    name="currentPassword"
-                    value={formData.currentPassword}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                
-                <div className={styles.formGroup}>
-                  <label htmlFor="newPassword">Yeni Şifre</label>
-                  <input 
-                    type="password" 
-                    id="newPassword" 
-                    name="newPassword"
-                    value={formData.newPassword}
-                    onChange={handleChange}
-                    required
-                    minLength={6}
-                  />
-                  <p className={styles.fieldHelp}>En az 6 karakter olmalıdır.</p>
-                </div>
-                
-                <div className={styles.formGroup}>
-                  <label htmlFor="confirmPassword">Yeni Şifre Tekrar</label>
-                  <input 
-                    type="password" 
-                    id="confirmPassword" 
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                    minLength={6}
-                  />
-                </div>
-                
-                <div className={styles.securityNote}>
-                  <FontAwesomeIcon icon={faShieldAlt} className={styles.securityIcon} />
-                  <p>Güvenliğiniz için güçlü bir şifre oluşturun. En az 8 karakter, büyük-küçük harf ve rakam kullanmanız önerilir.</p>
-                </div>
-                
-                <button type="submit" className={styles.submitButton}>
-                  <FontAwesomeIcon icon={faSave} className={styles.buttonIcon} />
-                  Şifreyi Güncelle
-                </button>
-              </form>
-            )}
+            <div className={styles.formActions}>
+              <button 
+                type="submit" 
+                className={styles.saveButton}
+                disabled={isLoading}
+              >
+                <FontAwesomeIcon icon={faSave} />
+                {isLoading ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div className={styles.settingsSection}>
+          <h2 className={styles.sectionTitle}>
+            <FontAwesomeIcon icon={faLock} className={styles.sectionIcon} />
+            Şifre Değiştir
+          </h2>
+          
+          {passwordSuccess && (
+            <div className={styles.successMessage}>
+              <FontAwesomeIcon icon={faCheck} />
+              <p>{passwordSuccess}</p>
+            </div>
+          )}
+          
+          {passwordError && (
+            <div className={styles.errorMessage}>
+              <FontAwesomeIcon icon={faExclamationTriangle} />
+              <p>{passwordError}</p>
+            </div>
+          )}
+          
+          <form onSubmit={handlePasswordUpdate} className={styles.settingsForm}>
+            <div className={styles.formGroup}>
+              <label htmlFor="currentPassword">Mevcut Şifre</label>
+              <PasswordInput
+                id="currentPassword"
+                name="currentPassword"
+                value={passwordData.currentPassword}
+                onChange={handlePasswordChange}
+                placeholder="Mevcut şifreniz"
+              />
+            </div>
             
-            {activeTab === 'help' && (
-              <div className={styles.helpContent}>
-                <h2 className={styles.panelTitle}>Yardım ve Destek</h2>
-                
-                <div className={styles.helpSection}>
-                  <h3>Sıkça Sorulan Sorular</h3>
-                  <ul className={styles.faqList}>
-                    <li>
-                      <h4>Randevu nasıl alabilirim?</h4>
-                      <p>"Randevular" sayfasından "Yeni Randevu" butonuna tıklayarak randevu alabilirsiniz.</p>
-                    </li>
-                    <li>
-                      <h4>Şifremi unuttum ne yapabilirim?</h4>
-                      <p>Giriş sayfasından "Şifremi Unuttum" seçeneğini kullanarak şifre sıfırlama bağlantısı alabilirsiniz.</p>
-                    </li>
-                  </ul>
-                </div>
-                
-                <div className={styles.helpSection}>
-                  <h3>İletişim</h3>
-                  <p>Teknik destek veya sorularınız için aşağıdaki iletişim kanallarını kullanabilirsiniz:</p>
-                  <ul className={styles.contactList}>
-                    <li>Telefon: (0212) 123 45 67</li>
-                    <li>E-posta: destek@rehabilitasyonmerkezi.com</li>
-                    <li>Çalışma Saatleri: Pazartesi - Cuma, 09:00 - 18:00</li>
-                  </ul>
-                </div>
-              </div>
-            )}
-          </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="newPassword">Yeni Şifre</label>
+              <PasswordInput
+                id="newPassword"
+                name="newPassword"
+                value={passwordData.newPassword}
+                onChange={handlePasswordChange}
+                placeholder="Yeni şifreniz"
+              />
+            </div>
+            
+            <div className={styles.formGroup}>
+              <label htmlFor="confirmPassword">Yeni Şifre (Tekrar)</label>
+              <PasswordInput
+                id="confirmPassword"
+                name="confirmPassword"
+                value={passwordData.confirmPassword}
+                onChange={handlePasswordChange}
+                placeholder="Yeni şifrenizi tekrar girin"
+              />
+            </div>
+            
+            <div className={styles.formActions}>
+              <button 
+                type="submit" 
+                className={styles.saveButton}
+                disabled={isLoading}
+              >
+                <FontAwesomeIcon icon={faSave} />
+                {isLoading ? 'Kaydediliyor...' : 'Şifreyi Güncelle'}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </DashboardLayout>

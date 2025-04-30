@@ -77,7 +77,6 @@ export default function AppointmentForm({
       
       setSuccess(true);
       
-      // 2 saniye sonra olay bildir ve modalı kapat
       setTimeout(() => {
         onAppointmentCreated();
       }, 2000);

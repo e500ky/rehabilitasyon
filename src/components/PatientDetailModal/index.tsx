@@ -1,19 +1,18 @@
 'use client';
 
-// İmport kısmını güncelle
 import Modal from '@/components/Modal';
 import { useAuth } from '@/context/AuthContext';
 import firestoreService from '@/lib/services/firestoreService';
 import {
-  faCalendarAlt,
-  faCalendarPlus,
-  faChartLine,
-  faGamepad,
-  faInfo,
-  faSpinner,
-  faSync,
-  faTrophy,
-  faUser
+    faCalendarAlt,
+    faCalendarPlus,
+    faChartLine,
+    faGamepad,
+    faInfo,
+    faSpinner,
+    faSync,
+    faTrophy,
+    faUser
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -44,7 +43,6 @@ export default function PatientDetailModal({ patient, onClose }: PatientDetailMo
   const [isRefreshingAppointments, setIsRefreshingAppointments] = useState(false);
   const [appointmentsCount, setAppointmentsCount] = useState(patient.upcomingAppointments || 0);
 
-  // Hasta için randevu sayısını yenile
   const refreshAppointmentsCount = async () => {
     if (!patient.id) return;
     
@@ -59,12 +57,10 @@ export default function PatientDetailModal({ patient, onClose }: PatientDetailMo
     }
   };
 
-  // Bileşen yüklendiğinde randevu sayısını güncelle
   useEffect(() => {
     refreshAppointmentsCount();
   }, [patient.id]);
 
-  // Hasta son ilerleme değerini hesaplama
   const getLastProgressData = () => {
     if (!patient.progress?.data || patient.progress.data.length === 0) {
       return null;
@@ -74,10 +70,8 @@ export default function PatientDetailModal({ patient, onClose }: PatientDetailMo
 
   const lastProgress = getLastProgressData();
 
-  // Randevu oluştur butonuna tıklandığında
   const handleCreateAppointment = () => {
-    onClose(); // Modalı kapat
-    // Bakıcının adını da URL parametre olarak ekleyelim
+    onClose(); 
     const caregiverName = encodeURIComponent(currentUser?.displayName || '');
     router.push(`/randevular/olustur?patientId=${patient.id}&patientName=${encodeURIComponent(patient.name)}&caregiverName=${caregiverName}`);
   };
@@ -229,7 +223,7 @@ export default function PatientDetailModal({ patient, onClose }: PatientDetailMo
                         <thead>
                           <tr>
                             <th>Tarih</th>
-                            <th>İlerleme (%)</th>
+                            <th>İlerleme</th>
                           </tr>
                         </thead>
                         <tbody>

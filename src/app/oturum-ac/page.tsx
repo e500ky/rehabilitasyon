@@ -1,5 +1,6 @@
 'use client';
 
+import PasswordInput from '@/components/PasswordInput';
 import ReCaptcha from '@/components/ReCaptcha';
 import { useAuth } from '@/context/AuthContext';
 import authService from '@/lib/services/authService';
@@ -38,13 +39,10 @@ export default function LoginPage() {
   };
 
   const handleCaptchaVerify = (token: string) => {
-    // Herhangi bir token alındıysa veya fallback token ise kabul et
     if (token) {
-      console.log("reCAPTCHA doğrulama başarılı");
       setCaptchaToken(token);
       setIsCaptchaVerified(true);
     } else {
-      console.log("reCAPTCHA doğrulama başarısız");
       setCaptchaToken(null);
       setIsCaptchaVerified(false);
     }
@@ -58,10 +56,8 @@ export default function LoginPage() {
       return;
     }
 
-    // Daha esnek captcha kontrolü
     const hasCaptchaToken = captchaToken !== null;
     
-    // Geliştirme modunda veya token varsa devam et
     if (!hasCaptchaToken && process.env.NODE_ENV !== 'development') {
       setError("Lütfen 'Ben robot değilim' doğrulamasını tamamlayın.");
       return;
@@ -149,14 +145,12 @@ export default function LoginPage() {
               <FontAwesomeIcon icon={faLock} className={styles.inputIcon} />
               Şifre
             </label>
-            <input
-              type="password"
+            <PasswordInput
               id="password"
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Şifreniz"
               className={styles.inputWithIcon}
             />
           </div>
@@ -171,7 +165,6 @@ export default function LoginPage() {
             </button>
           </div>
           
-          {/* reCAPTCHA bileşeni */}
           <ReCaptcha onVerify={handleCaptchaVerify} />
           
           <button 

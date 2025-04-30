@@ -5,7 +5,7 @@ import styles from './ReCaptcha.module.css';
 
 interface ReCaptchaProps {
   onVerify: (token: string) => void;
-  skipInDev?: boolean; // Geliştirme ortamında atlama seçeneği
+  skipInDev?: boolean; 
 }
 
 const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
@@ -14,11 +14,9 @@ const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
   const [error, setError] = useState<string | null>(null);
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
-  // Geliştirme ortamında reCAPTCHA'yı atlama
   useEffect(() => {
     const isDev = process.env.NODE_ENV === 'development';
     if (skipInDev && isDev) {
-      console.log('Geliştirme ortamında reCAPTCHA atlandı');
       onVerify('dev_mode_bypass_token');
       return;
     }
@@ -28,10 +26,8 @@ const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
     const isDev = process.env.NODE_ENV === 'development';
     if (skipInDev && isDev) return;
 
-    // Doğrudan scripting kullanarak reCAPTCHA entegrasyonu
     const initializeRecaptcha = async () => {
       try {
-        // Hata durumunda doğrudan bypass token döndür
         if (!siteKey) {
           console.error('reCAPTCHA site anahtarı bulunamadı');
           setError('reCAPTCHA yapılandırması eksik (.env.local dosyasını kontrol edin)');
@@ -39,16 +35,12 @@ const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
           return;
         }
 
-        // Daha önce yüklendiyse tekrar denemeden çık
         if (document.querySelector('script#recaptcha-script')) {
-          console.log('reCAPTCHA scripti zaten yüklenmiş');
           return;
         }
 
-        // Google reCAPTCHA callback fonksiyonlarını global scope'a ekle
         window.recaptchaCallback = (token: string) => {
           setLoading(false);
-          console.log('reCAPTCHA başarıyla doğrulandı');
           onVerify(token);
         };
 
@@ -62,11 +54,9 @@ const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
         window.recaptchaExpiredCallback = () => {
           setLoading(false);
           setError('reCAPTCHA süresi doldu, lütfen tekrar deneyin');
-          console.log('reCAPTCHA süresi doldu');
           onVerify('');
         };
 
-        // reCAPTCHA div elementini oluştur
         if (containerRef.current) {
           containerRef.current.innerHTML = `
             <div class="g-recaptcha" 
@@ -78,14 +68,12 @@ const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
           `;
         }
 
-        // reCAPTCHA script ekle
         const script = document.createElement('script');
         script.id = 'recaptcha-script';
         script.src = 'https://www.google.com/recaptcha/api.js?render=explicit&onload=onRecaptchaLoad';
         script.async = true;
         document.head.appendChild(script);
 
-        // reCAPTCHA hazır olduğunda render et
         window.onRecaptchaLoad = () => {
           try {
             if (window.grecaptcha && window.grecaptcha.render && containerRef.current) {
@@ -106,14 +94,13 @@ const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
           }
         };
 
-        // Zaman aşımı kontrolü
         const timeout = setTimeout(() => {
           if (loading) {
             console.error('reCAPTCHA yükleme zaman aşımı');
             setError('reCAPTCHA yüklenirken zaman aşımına uğradı');
             onVerify('timeout_bypass_token');
           }
-        }, 10000); // 10 saniye
+        }, 10000); 
 
         return () => clearTimeout(timeout);
       } catch (err) {
@@ -125,7 +112,6 @@ const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
 
     initializeRecaptcha();
 
-    // Cleanup function
     return () => {
       delete window.recaptchaCallback;
       delete window.recaptchaErrorCallback;
@@ -134,7 +120,6 @@ const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
     };
   }, [onVerify, siteKey, skipInDev]);
 
-  // Geliştirme ortamında atlanırsa boş render
   if (process.env.NODE_ENV === 'development' && skipInDev) {
     return (
       <div className={styles.devModeNotice}>
@@ -143,7 +128,6 @@ const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
     );
   }
 
-  // Hata durumunda hata mesajını göster
   if (error) {
     return (
       <div className={styles.recaptchaError}>
@@ -153,7 +137,6 @@ const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
     );
   }
 
-  // Normal yükleme durumunda
   return (
     <div className={styles.recaptchaContainer}>
       {loading && <div className={styles.loadingIndicator}>reCAPTCHA yükleniyor...</div>}
@@ -162,7 +145,6 @@ const ReCaptcha = ({ onVerify, skipInDev = true }: ReCaptchaProps) => {
   );
 };
 
-// Global tipler
 declare global {
   interface Window {
     grecaptcha: any;

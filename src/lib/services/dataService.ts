@@ -2,7 +2,6 @@ import { db } from '@/firebase/config';
 import { User } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 
-// Firebase'den kullanıcı verilerini almak için tip tanımlamaları
 export interface AppointmentData {
   id: string;
   date: string;
@@ -42,14 +41,12 @@ export interface UserStats {
   maxLevel: number;
 }
 
-// Randevu verilerini getir
 export const getUserAppointments = async (user: User): Promise<AppointmentData[]> => {
   try {
     const appointmentsRef = collection(db, 'users', user.uid, 'appointments');
     const querySnapshot = await getDocs(appointmentsRef);
     
     if (querySnapshot.empty) {
-      // Veri yoksa örnek veriler oluştur ve kaydet
       const defaultAppointments = generateDefaultAppointments();
       await Promise.all(
         defaultAppointments.map(appointment => 
@@ -69,14 +66,12 @@ export const getUserAppointments = async (user: User): Promise<AppointmentData[]
   }
 };
 
-// Egzersiz verilerini getir
 export const getUserExercises = async (user: User): Promise<ExerciseData[]> => {
   try {
     const exercisesRef = collection(db, 'users', user.uid, 'exercises');
     const querySnapshot = await getDocs(exercisesRef);
     
     if (querySnapshot.empty) {
-      // Veri yoksa örnek veriler oluştur ve kaydet
       const defaultExercises = generateDefaultExercises();
       await Promise.all(
         defaultExercises.map(exercise => 
@@ -96,14 +91,12 @@ export const getUserExercises = async (user: User): Promise<ExerciseData[]> => {
   }
 };
 
-// İlerleme verilerini getir
 export const getUserProgress = async (user: User): Promise<ProgressData> => {
   try {
     const progressRef = doc(db, 'users', user.uid, 'stats', 'progress');
     const progressDoc = await getDoc(progressRef);
     
     if (!progressDoc.exists()) {
-      // Veri yoksa örnek veriler oluştur ve kaydet
       const defaultProgress = generateDefaultProgress();
       await setDoc(progressRef, defaultProgress);
       return defaultProgress;
@@ -116,14 +109,12 @@ export const getUserProgress = async (user: User): Promise<ProgressData> => {
   }
 };
 
-// Kullanıcı istatistiklerini getir
 export const getUserStats = async (user: User): Promise<UserStats> => {
   try {
     const statsRef = doc(db, 'users', user.uid, 'stats', 'overview');
     const statsDoc = await getDoc(statsRef);
     
     if (!statsDoc.exists()) {
-      // Veri yoksa örnek veriler oluştur ve kaydet
       const defaultStats = generateDefaultStats();
       await setDoc(statsRef, defaultStats);
       return defaultStats;
@@ -136,7 +127,6 @@ export const getUserStats = async (user: User): Promise<UserStats> => {
   }
 };
 
-// Varsayılan veri oluşturucu fonksiyonlar
 function generateDefaultAppointments(): AppointmentData[] {
   const today = new Date();
   

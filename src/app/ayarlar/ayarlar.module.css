@@ -1,319 +1,137 @@
-.ayarlarContainer {
-  width: 100%;
+.settingsContainer {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
-.pageHeader {
-  margin-bottom: 2rem;
-}
-
-.pageTitle {
-  font-size: 2rem;
+.settingsTitle {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
   color: #333;
-  margin: 0;
 }
 
-.settingsContent {
-  display: flex;
-  gap: 2rem;
-}
-
-.settingsTabs {
-  width: 220px;
-  flex-shrink: 0;
-}
-
-.tabButton {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 1rem 1.2rem;
-  background: none;
-  border: none;
-  border-left: 3px solid transparent;
-  text-align: left;
-  font-size: 1rem;
-  color: #555;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 0.5rem;
-  border-radius: 0 6px 6px 0;
-}
-
-.tabButton:hover {
-  background-color: #f5f5f5;
-  color: #0070f3;
-}
-
-.tabButton.active {
-  background-color: rgba(0, 112, 243, 0.1);
-  color: #0070f3;
-  border-left-color: #0070f3;
-}
-
-.tabIcon {
-  width: 20px;
-  text-align: center;
-  font-size: 1.1rem;
-}
-
-.settingsPanel {
-  flex: 1;
+.settingsSection {
   background-color: white;
+  padding: 20px;
+  margin-bottom: 30px;
   border-radius: 8px;
-  padding: 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.panelTitle {
-  font-size: 1.5rem;
-  color: #333;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+.sectionTitle {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.sectionIcon {
+  color: #2196F3;
 }
 
 .settingsForm {
-  width: 100%;
-  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .formGroup {
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .formGroup label {
-  display: block;
-  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: #555;
 }
 
-.formGroup input,
-.formGroup select {
-  width: 100%;
-  padding: 0.8rem;
+.formGroup input {
+  padding: 10px;
+  border-radius: 4px;
   border: 1px solid #ddd;
-  border-radius: 6px;
   font-size: 1rem;
-  transition: all 0.2s ease;
 }
 
-.formGroup input:focus,
-.formGroup select:focus {
+.formGroup input:focus {
   outline: none;
-  border-color: #0070f3;
-  box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+  border-color: #2196F3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
 }
 
-.formGroup input:disabled {
-  background-color: #f9f9f9;
-  color: #777;
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.saveButton {
+  background-color: #2196F3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.saveButton:hover {
+  background-color: #1976D2;
+}
+
+.saveButton:disabled {
+  background-color: #ccc;
   cursor: not-allowed;
 }
 
-.fieldHelp {
-  margin-top: 0.4rem;
-  font-size: 0.85rem;
-  color: #777;
-}
-
-.checkboxGroup {
-  margin-bottom: 1.5rem;
+.successMessage, .errorMessage {
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
   display: flex;
-  flex-direction: column;
-}
-
-.checkboxGroup input {
-  margin-right: 0.5rem;
-  width: auto;
-}
-
-.checkboxGroup label {
-  display: inline-flex;
+  gap: 10px;
   align-items: center;
-  font-weight: 500;
-  color: #555;
-  margin-bottom: 0.3rem;
-}
-
-.submitButton {
-  background-color: #0070f3;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.submitButton:hover {
-  background-color: #005fc3;
-}
-
-.buttonIcon {
-  font-size: 1.1rem;
 }
 
 .successMessage {
-  background-color: #e6f7ed;
-  color: #0f9d58;
-  padding: 1rem;
-  border-radius: 6px;
-  margin-bottom: 1.5rem;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-left: 4px solid #2e7d32;
 }
 
 .errorMessage {
   background-color: #ffebee;
-  color: #d32f2f;
-  padding: 1rem;
-  border-radius: 6px;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  color: #c62828;
+  border-left: 4px solid #c62828;
 }
 
-.errorMessage svg {
-  font-size: 30px;
-  justify-content: center;
-  display: flex;
-  align-items: center;
+.successMessage svg, .errorMessage svg {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+  margin-top: 0;
+  font-size: 20px;
 }
 
-.errorIcon {
-  font-size: 1.1rem;
+.disabledInput {
+  background-color: #f5f5f5;
+  color: #6c757d;
+  cursor: not-allowed;
+  border: 1px solid #ddd;
+  opacity: 0.8;
 }
 
-.securityNote {
-  background-color: #fff8e1;
-  border-radius: 6px;
-  padding: 1rem;
-  margin: 1.5rem 0;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.8rem;
-}
-
-.securityIcon {
-  color: #ffa000;
-  font-size: 1.2rem;
-  margin-top: 0.3rem;
-}
-
-.securityNote p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.helpContent {
-  width: 100%;
-}
-
-.helpSection {
-  margin-bottom: 2rem;
-}
-
-.helpSection h3 {
-  font-size: 1.2rem;
-  color: #333;
-  margin-bottom: 1rem;
-}
-
-.faqList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.faqList li {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #eee;
-}
-
-.faqList li:last-child {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
-}
-
-.faqList h4 {
-  margin: 0 0 0.5rem;
-  font-size: 1.1rem;
-  color: #333;
-}
-
-.faqList p {
-  margin: 0;
-  color: #555;
-}
-
-.contactList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.contactList li {
-  margin-bottom: 0.5rem;
-  color: #555;
-}
-
-@media (max-width: 992px) {
-  .settingsContent {
-    flex-direction: column;
-  }
-  
-  .settingsTabs {
-    width: 100%;
-    display: flex;
-    overflow-x: auto;
-    margin-bottom: 1.5rem;
-  }
-  
-  .tabButton {
-    flex: 0 0 auto;
-    width: auto;
-    border-left: none;
-    border-bottom: 3px solid transparent;
-    border-radius: 6px 6px 0 0;
-    margin-bottom: 0;
-    padding: 0.8rem 1rem;
-  }
-  
-  .tabButton.active {
-    border-left-color: transparent;
-    border-bottom-color: #0070f3;
-  }
-}
-
-@media (max-width: 768px) {
-  .settingsPanel {
-    padding: 1.5rem;
-  }
-  
-  .tabButton {
-    padding: 0.7rem;
-  }
-  
-  .tabButton span {
-    display: none;
-  }
+.inputNote {
+  color: #6c757d;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  font-style: italic;
 }

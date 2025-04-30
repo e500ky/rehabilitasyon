@@ -2,33 +2,31 @@
 
 import { useAuth } from '@/context/AuthContext';
 import authService from '@/lib/services/authService';
-import firestoreService from '@/lib/services/firestoreService'; // firestoreService import edildi
-import { UserProfile } from '@/types/user'; // UserProfile tipi import edildi
+import firestoreService from '@/lib/services/firestoreService'; 
+import { UserProfile } from '@/types/user'; 
 import {
   faBars,
   faCalendarAlt,
-  faCog, // Egzersizler ikonu eklendi (hasta için)
+  faCog,
   faHome,
   faSignOutAlt,
   faTimes,
-  faUserCircle,
-  faUserInjured
+  faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'; // useEffect, useState import edildi
+import React, { useEffect, useState } from 'react'; 
 import styles from './Sidebar.module.css';
 
 const Sidebar: React.FC = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { currentUser } = useAuth();
   const router = useRouter();
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null); // Kullanıcı profili state'i
-  const [isLoadingProfile, setIsLoadingProfile] = useState(true); // Profil yüklenme durumu
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null); 
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
-  // Kullanıcı profili yüklendiğinde userType'ı al
   useEffect(() => {
     const fetchProfile = async () => {
       if (currentUser) {
@@ -36,21 +34,20 @@ const Sidebar: React.FC = () => {
         try {
           const profile = await firestoreService.getUserProfile(currentUser.uid);
           setUserProfile(profile);
-          console.log("Sidebar: Kullanıcı profili yüklendi:", profile);
         } catch (error) {
           console.error("Sidebar: Kullanıcı profili alınamadı:", error);
-          setUserProfile(null); // Hata durumunda profili sıfırla
+          setUserProfile(null); 
         } finally {
           setIsLoadingProfile(false);
         }
       } else {
-        setUserProfile(null); // Kullanıcı yoksa profili sıfırla
+        setUserProfile(null);
         setIsLoadingProfile(false);
       }
     };
 
     fetchProfile();
-  }, [currentUser]); // currentUser değiştiğinde profili tekrar çek
+  }, [currentUser]);
 
   const toggleMobileSidebar = () => {
     setIsMobileOpen(!isMobileOpen);
@@ -65,29 +62,25 @@ const Sidebar: React.FC = () => {
     }
   };
 
-  // Bakıcı kullanıcıları için bağlantılar
   const caregiverLinks = [
     { href: "/dashboard", text: "Ana Sayfa", icon: faHome },
-    { href: "/patients", text: "Hastalarım", icon: faUserInjured },
     { href: "/randevular", text: "Randevular", icon: faCalendarAlt },
     { href: "/ayarlar", text: "Ayarlar", icon: faCog },
   ];
 
-  // Hasta kullanıcıları için bağlantılar
   const patientLinks = [
     { href: "/dashboard", text: "Ana Sayfa", icon: faHome },
     { href: "/randevularim", text: "Randevularım", icon: faCalendarAlt },
     { href: "/ayarlar", text: "Ayarlar", icon: faCog },
   ];
 
-  // Gösterilecek linkleri belirle
   const linksToShow = isLoadingProfile
-    ? [] // Profil yüklenirken boş liste
+    ? []
     : userProfile?.userType === 'caregiver'
     ? caregiverLinks
     : userProfile?.userType === 'patient'
     ? patientLinks
-    : []; // Profil yüklenemezse veya tip yoksa boş liste
+    : [];
 
   return (
     <>
@@ -128,9 +121,9 @@ const Sidebar: React.FC = () => {
             <div className={styles.loadingNav}>Menü yükleniyor...</div>
           ) : (
             <ul className={styles.navList}>
-              {linksToShow.map(link => ( // linksToShow kullanıldı
+              {linksToShow.map(link => ( 
                 <li className={styles.navItem} key={link.href}>
-                  <Link href={link.href} className={styles.navLink} onClick={() => setIsMobileOpen(false)}> {/* Mobil menüyü kapat */}
+                  <Link href={link.href} className={styles.navLink} onClick={() => setIsMobileOpen(false)}> 
                     <FontAwesomeIcon icon={link.icon} className={styles.navIcon} />
                     <span>{link.text}</span>
                   </Link>

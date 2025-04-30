@@ -29,7 +29,6 @@ export default function Demo() {
   const [submitted, setSubmitted] = useState(false);
   const [currentVideo, setCurrentVideo] = useState(0);
 
-  // Demo videoları
   const demoVideos = [
     {
       id: 1,
@@ -66,7 +65,6 @@ export default function Demo() {
     e.preventDefault();
     setLoading(true);
     
-    // Form gönderimi simülasyonu
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
       setSubmitted(true);
@@ -232,7 +230,7 @@ export default function Demo() {
                             name="email" 
                             value={formData.email}
                             onChange={handleChange}
-                            required 
+                            className={styles.emailInput}
                           />
                         </div>
                         <div className={styles.formGroup}>

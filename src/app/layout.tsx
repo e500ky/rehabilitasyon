@@ -18,13 +18,15 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <head>
-        {/* Global reCAPTCHA script */}
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
       </head>
       <body className={inter.className}>
         <AuthProvider>
           {children}
         </AuthProvider>
+        
+        {/* DevTools koruma scripti */}
+        
       </body>
     </html>
   );

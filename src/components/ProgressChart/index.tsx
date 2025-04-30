@@ -31,6 +31,13 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ data = [] }) => {
         borderColor: 'rgb(53, 162, 235)',
         backgroundColor: 'rgba(53, 162, 235, 0.5)',
         tension: 0.3,
+        },
+    {
+        label: 'ROM (Range Of Motion) (cm)',
+        data: data.map(item => item.rom),
+        borderColor: 'rgba(235, 53, 53, 0.47)',
+        backgroundColor: 'rgba(235, 53, 53, 0.5)',
+        tension: 0.3,
       },
     ],
   };
@@ -53,7 +60,7 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ data = [] }) => {
         max: 100,
         title: {
           display: true,
-          text: 'İlerleme (%)'
+          text: 'İlerleme'
         }
       },
       x: {

@@ -24,10 +24,8 @@ interface RegisterData {
 }
 
 const authService = {
-  // Kullanıcı kaydı
   register: async (userData: RegisterData): Promise<User> => {
     try {
-      // reCAPTCHA kontrolü (bypass tokenlar ile esnek çalışma)
       const bypassTokens = [
         'dev_mode_bypass_token', 
         'missing_config_bypass_token', 
@@ -37,15 +35,12 @@ const authService = {
         'init_error_bypass_token'
       ];
       
-      // captchaToken varsa ve geçersizse hata fırlat
-      // Ancak bypass tokenlerden biriyse kontrolü atla
       if (userData.captchaToken && 
           !bypassTokens.includes(userData.captchaToken) && 
           userData.captchaToken.length < 20) {
         throw new Error("Geçersiz reCAPTCHA doğrulaması. Lütfen tekrar deneyin.");
       }
 
-      // Firebase ile kullanıcı kaydı
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         userData.email,
@@ -54,12 +49,10 @@ const authService = {
       
       const user = userCredential.user;
       
-      // Kullanıcı profilini güncelle
       await updateProfile(user, {
         displayName: userData.displayName
       });
       
-      // Firestore'da kullanıcı profili oluştur
       await firestoreService.createUserProfile(user.uid, {
         uid: user.uid,
         displayName: userData.displayName,
@@ -68,8 +61,6 @@ const authService = {
         photoURL: user.photoURL || null
       });
       
-      // Captcha token'ını kullanarak ekstra doğrulama yapabilirsiniz
-      // Örnek: Bir Cloud Function çağrısı ile token'ı doğrulayabilirsiniz
       
       return user;
     } catch (error) {
@@ -78,10 +69,8 @@ const authService = {
     }
   },
   
-  // Kullanıcı girişi
   login: async (loginData: LoginData): Promise<User> => {
     try {
-      // reCAPTCHA kontrolü (bypass tokenlar ile esnek çalışma)
       const bypassTokens = [
         'dev_mode_bypass_token', 
         'missing_config_bypass_token', 
@@ -91,8 +80,6 @@ const authService = {
         'init_error_bypass_token'
       ];
       
-      // captchaToken varsa ve geçersizse hata fırlat
-      // Ancak bypass tokenlerden biriyse kontrolü atla
       if (loginData.captchaToken && 
           !bypassTokens.includes(loginData.captchaToken) && 
           loginData.captchaToken.length < 20) {
@@ -101,8 +88,6 @@ const authService = {
 
       const { email, password } = loginData;
       
-      // Captcha token'ını kullanarak ekstra doğrulama yapabilirsiniz
-      // Örnek: Bir Cloud Function çağrısı ile token'ı doğrulayabilirsiniz
       
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -117,7 +102,6 @@ const authService = {
     }
   },
   
-  // Çıkış yap
   signOut: async () => {
     try {
       await signOut(auth);
@@ -127,14 +111,17 @@ const authService = {
     }
   },
   
-  // Şifre sıfırlama e-postası gönder
-  resetPassword: async (email: string) => {
+  sendPasswordReset: async (email: string) => {
     try {
       await sendPasswordResetEmail(auth, email);
     } catch (error) {
       console.error('Şifre sıfırlama hatası:', error);
       throw error;
     }
+  },
+  
+  resetPassword: async (email: string) => {
+    return authService.sendPasswordReset(email);
   }
 };
 

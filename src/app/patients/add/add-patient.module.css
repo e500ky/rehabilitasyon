@@ -43,10 +43,14 @@
   border-left: 4px solid #e03131;
   border-radius: 6px;
   color: #e03131;
+  align-items: center;
 }
 
 .errorMessage svg {
   margin-top: 0.2rem;
+  font-size: 30px;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .successMessage {

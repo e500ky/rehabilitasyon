@@ -36,12 +36,9 @@ export default function AddPatient() {
           setUserProfile(profile);
           
           if (profile.userType !== 'caregiver') {
-            // Sadece bakıcı tipindeki kullanıcılar bu sayfaya erişebilir
             router.push('/dashboard');
           } else {
-            // Bakıcının mevcut hastalarını getir
             const patients = await firestoreService.getCaregiverPatients(currentUser.uid);
-            // Hasta ID'lerini bir diziye kaydet
             const patientIds = patients.map(patient => patient.id);
             setExistingPatients(patientIds);
           }
@@ -63,27 +60,18 @@ export default function AddPatient() {
     setSearchResults([]);
     
     try {
-      console.log("Hasta arama başlatıldı. Sorgu:", trimmedQuery);
       
-      // Sadece 'patient' tipindeki kullanıcıları ara
       const patients = await firestoreService.searchUsersByEmail(trimmedQuery, 'patient');
-      console.log("Arama sonucu (sadece hastalar):", patients);
       
       if (patients.length === 0) {
-        // Hiç hasta bulunamadıysa, email ile genel bir arama yapıp tipini kontrol et
-        console.log("Hasta bulunamadı, genel kullanıcı araması yapılıyor...");
         const allUsers = await firestoreService.searchUsersByEmail(trimmedQuery);
-        console.log("Genel arama sonucu:", allUsers);
         
         if (allUsers.length > 0) {
-          // Kullanıcı bulundu ama tipi 'patient' değil
           setError(`'${trimmedQuery}' e-posta adresine sahip bir kullanıcı bulundu, ancak bu kullanıcı 'hasta' rolünde değil. Sadece 'hasta' rolündeki kullanıcıları ekleyebilirsiniz.`);
         } else {
-          // Kullanıcı hiç bulunamadı
           setError(`'${trimmedQuery}' e-posta adresine sahip bir kullanıcı bulunamadı. Lütfen e-posta adresini kontrol edin.`);
         }
       } else {
-        // Hasta bulundu - mevcut hastaları filtrele
         const filteredResults = patients.filter(patient => !existingPatients.includes(patient.uid));
         
         if (filteredResults.length === 0) {
@@ -95,7 +83,6 @@ export default function AddPatient() {
     } catch (err: any) {
       console.error('Arama sırasında hata oluştu:', err);
       
-      // Anlamlı hata mesajları göster
       if (err.message.includes('güvenlik kurallarını kontrol edin')) {
          setError('İzin hatası: Kullanıcı arama izniniz yok gibi görünüyor. Firebase güvenlik kurallarını kontrol edin.');
       } else {
@@ -103,11 +90,9 @@ export default function AddPatient() {
       }
     } finally {
       setIsLoading(false);
-      console.log("Arama tamamlandı.");
     }
   };
   
-  // Hasta ekleme işlemi
   const handleAddPatient = async (patientId: string, patientName: string) => {
     if (!currentUser) {
       console.error("Hasta eklenemedi: Kullanıcı oturumu bulunamadı!");
@@ -120,32 +105,22 @@ export default function AddPatient() {
     setSuccessMessage(null);
     
     try {
-      console.log(`Hasta ekleme işlemi başladı:`);
-      console.log(`Bakıcı ID: ${currentUser.uid}`);
-      console.log(`Hasta ID: ${patientId}`);
-      console.log(`Hasta Adı: ${patientName}`);
       
-      // Kullanıcı kimlik bilgilerini kontrol et
       if (!currentUser.uid || typeof currentUser.uid !== 'string') {
-        throw new Error("Geçersiz bakıcı ID'si: " + currentUser.uid);
+        throw new Error("Geçersiz Kullanıcı ID'si: " + currentUser.uid);
       }
       
       if (!patientId || typeof patientId !== 'string') {
         throw new Error("Geçersiz hasta ID'si: " + patientId);
       }
       
-      // Bakıcı-hasta ilişkisini oluştur
-      console.log("Firestore ilişki oluşturma fonksiyonu çağrılıyor...");
       const relationId = await firestoreService.createCaregiverPatientRelation(currentUser.uid, patientId);
       
-      console.log(`İlişki oluşturuldu! ID: ${relationId}`);
       setSuccessMessage(`${patientName} başarıyla hasta listenize eklendi!`);
       
-      // Aramayı ve sonuçları temizle
       setSearchResults([]);
       setSearchQuery('');
       
-      // 2 saniye sonra hastalar sayfasına yönlendir
       setTimeout(() => {
         router.push('/patients');
       }, 2000);
@@ -155,7 +130,6 @@ export default function AddPatient() {
       
       let errorMessage = "Hasta eklenirken bir hata oluştu.";
       
-      // Hata mesajını detaylandır
       if (err.code === 'permission-denied') {
         errorMessage = "İzin hatası: Firebase güvenlik kurallarını kontrol edin.";
       } else if (err.message) {
@@ -172,9 +146,9 @@ export default function AddPatient() {
     <DashboardLayout>
       <div className={styles.container}>
         <div className={styles.header}>
-          <Link href="/patients" className={styles.backLink}>
+          <Link href="/dashboard" className={styles.backLink}>
             <FontAwesomeIcon icon={faArrowLeft} />
-            <span>Hastalarım Sayfasına Dön</span>
+            <span>Ana Sayfaya Dön</span>
           </Link>
           <h1>Hasta Ekle</h1>
         </div>

@@ -7,7 +7,7 @@ import styles from './Modal.module.css';
 
 interface ModalProps {
   title: string;
-  onClose: (() => void) | null; // null olabileceğini belirt
+  onClose: (() => void) | null; 
   children: React.ReactNode;
 }
 
@@ -15,7 +15,6 @@ export default function Modal({ title, onClose, children }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    // Eğer onClose null ise, dışarı tıklama veya ESC ile kapanmaması gerekir
     if (onClose) {
       const handleClickOutside = (event: MouseEvent) => {
         if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -38,7 +37,6 @@ export default function Modal({ title, onClose, children }: ModalProps) {
       };
     }
     
-    // Bu kısım her durumda çalışır
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = 'auto';

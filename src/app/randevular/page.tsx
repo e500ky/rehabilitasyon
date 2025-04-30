@@ -5,6 +5,8 @@ import Modal from '@/components/Modal';
 import { useAuth } from '@/context/AuthContext';
 import firestoreService from '@/lib/services/firestoreService';
 import { AppointmentData, UserProfile } from '@/types/user';
+import { useRouter } from 'next/navigation';
+
 import {
   faAppleAlt,
   faCalendar,
@@ -27,6 +29,7 @@ import { useEffect, useState } from 'react';
 import styles from './randevular.module.css';
 
 export default function Randevular() {
+  const router = useRouter();
   const { currentUser } = useAuth();
   const [appointments, setAppointments] = useState<AppointmentData[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -777,17 +780,32 @@ export default function Randevular() {
                     <div 
                       key={level}
                       className={`${styles.levelBox} ${level === selectedLevel ? styles.selectedLevel : ''}`}
-                      onClick={() => handleLevelChange(level)}
                     >
                       <FontAwesomeIcon 
                         icon={faInfoCircle} 
                         className={styles.levelInfoIcon}
                         title={`Seviye ${level} hakkında bilgi`}
+                        onClick={() => {
+                          router.push('/dashboard')
+                        }}
                       />
-                      <span className={styles.levelNumber}>{level}</span>
-                      <span className={styles.levelText}>
-                        {level == 9 ? "Dinamik": null}
-                      </span>
+                      <div className={styles.asd} onClick={() => {
+                        handleLevelChange(level)
+                      }}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          flexDirection: 'column',
+                          zIndex: 50,
+                          width: '100%',
+                          height: '100%',
+                      }}>
+                        <span className={styles.levelNumber}>{level}</span>
+                        <span className={styles.levelText}>
+                          {level == 9 ? "(Dinamik)": null}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>

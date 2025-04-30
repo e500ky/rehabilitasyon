@@ -33,10 +33,17 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ data = [] }) => {
         tension: 0.3,
         },
     {
-        label: 'ROM (Range Of Motion) (cm)',
+        label: 'Hareket Mesafesi (cm)',
         data: data.map(item => item.rom),
         borderColor: 'rgba(235, 53, 53, 0.47)',
         backgroundColor: 'rgba(235, 53, 53, 0.5)',
+        tension: 0.3,
+      },
+    {
+        label: 'Ortalama Tutuş Süresi (sn)',
+        data: data.map(item => item.holdDuration),
+        borderColor: 'rgba(53, 235, 56, 0.47)',
+        backgroundColor: 'rgba(53, 235, 59, 0.5)',
         tension: 0.3,
       },
     ],

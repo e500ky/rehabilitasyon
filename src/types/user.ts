@@ -19,6 +19,7 @@ export interface ProgressDataPoint {
   date: string;
   progress: number;
   rom: number;
+  holdDuration: number;
 }
 
 export interface ProgressData {

@@ -646,6 +646,11 @@
   }
 }
 
+.info {
+  width: 15px;
+  height: 15px;
+}
+
 /* Seviye Grid Sistemi */
 .levelGrid {
   display: grid;
@@ -668,7 +673,8 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   position: relative;
   overflow: hidden;
-  min-height: 50px;
+  min-height: 100px;
+  padding: 0;
 }
 
 .levelBox:hover {
@@ -701,7 +707,6 @@
   font-size: 24px;
   font-weight: 700;
   color: #343a40;
-  margin-bottom: 5px;
 }
 
 .levelText {
@@ -824,6 +829,7 @@
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   transition: color 0.2s;
+  z-index: 500;
 }
 
 .levelInfoIcon:hover {

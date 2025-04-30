@@ -19,12 +19,14 @@ import {
   faHourglass,
   faInfoCircle,
   faMapMarkedAlt,
+  faSearch,
+  faTimes,
   faTrashAlt,
   faUserMd
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { format, isAfter, isBefore, isToday, parseISO } from 'date-fns';
-import tr from 'date-fns/locale/tr';
+import { tr } from 'date-fns/locale';
 import { useEffect, useState } from 'react';
 import styles from './randevular.module.css';
 
@@ -39,8 +41,8 @@ export default function Randevular() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showStartModal, setShowStartModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<AppointmentData | null>(null);
-  const [selectedLevel, setSelectedLevel] = useState(1);
-  const [caregivers, setCaregivers] = useState<{id: string, name: string}[]>([]);
+  const [selectedLevel, setSelectedLevel] = useState(1);  const [caregivers, setCaregivers] = useState<{id: string, name: string}[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   
   const [newAppointment, setNewAppointment] = useState({
     caregiverId: '',
@@ -64,6 +66,10 @@ export default function Randevular() {
   });
   
   const [dynamicConfigured, setDynamicConfigured] = useState(false);
+
+  // Tüm randevuları silme işlemi için state'ler
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
+  const [deletingAll, setDeletingAll] = useState(false);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -374,22 +380,73 @@ export default function Randevular() {
     }
   };
 
-  const filteredAppointments = appointments.filter(appointment => {
+  const handlePauseSession = () => {
+    setShowStartModal(false);
+  };
+  
+  const handleDeleteAllAppointments = async () => {
+    if (!currentUser) return;
+    
+    setDeletingAll(true);
+    try {
+      // Tüm randevuları silme işlemi
+      await firestoreService.deleteAllCaregiverAppointments(currentUser.uid);
+      
+      // Randevuların listesini güncelle
+      setAppointments([]);
+      setShowDeleteAllModal(false);
+      
+      // Başarılı mesajı göster
+      setError(null);
+      alert('Tüm randevular başarıyla silindi.');
+    } catch (err) {
+      console.error("Tüm randevuları silme hatası:", err);
+      setError("Randevular silinirken bir hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
+      setDeletingAll(false);
+    }
+  };
+    const filteredAppointments = appointments.filter(appointment => {
     const appointmentDate = parseISO(appointment.date);
     
-    if (filter === 'all') return true;
+    // Durum filtresi
+    let statusMatch = true;
     if (filter === 'upcoming') {
-      return (isToday(appointmentDate) || isAfter(appointmentDate, new Date())) && 
-             (appointment.status === 'pending' || appointment.status === 'accepted');
+      statusMatch = (isToday(appointmentDate) || isAfter(appointmentDate, new Date())) && 
+              (appointment.status === 'pending' || appointment.status === 'accepted');
+    } else if (filter === 'pending') {
+      statusMatch = appointment.status === 'pending';
+    } else if (filter === 'accepted') {
+      statusMatch = appointment.status === 'accepted';
+    } else if (filter === 'completed') {
+      statusMatch = appointment.status === 'completed';
+    } else if (filter === 'cancelled') {
+      statusMatch = appointment.status === 'cancelled';
+    } else if (filter === 'today') {
+      statusMatch = isToday(appointmentDate);
+    } else if (filter === 'past') {
+      statusMatch = isBefore(appointmentDate, new Date()) && !isToday(appointmentDate);
+    } else if (filter === 'all') {
+      statusMatch = true;
     }
-    if (filter === 'pending') return appointment.status === 'pending';
-    if (filter === 'accepted') return appointment.status === 'accepted';
-    if (filter === 'completed') return appointment.status === 'completed';
-    if (filter === 'cancelled') return appointment.status === 'cancelled';
-    if (filter === 'today') return isToday(appointmentDate);
-    if (filter === 'past') return isBefore(appointmentDate, new Date()) && !isToday(appointmentDate);
+      // Arama sorgusu filtrelemesi
+    let searchMatch = true;
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      const patientName = appointment.patientName ? appointment.patientName.toLowerCase() : '';
+      const caregiverName = appointment.caregiverName ? appointment.caregiverName.toLowerCase() : '';
+      const appointmentType = appointment.type ? appointment.type.toLowerCase() : '';
+      const formattedDate = format(appointmentDate, 'dd MMMM yyyy', { locale: tr }).toLowerCase();
+      const notes = appointment.notes?.toLowerCase() || '';
+      
+      searchMatch = patientName.includes(query) || 
+                   caregiverName.includes(query) ||
+                   appointmentType.includes(query) ||
+                   formattedDate.includes(query) ||
+                   notes.includes(query);
+    }
     
-    return true;
+    return statusMatch && searchMatch;
   });
 
   const sortedAppointments = [...filteredAppointments].sort((a, b) => {
@@ -412,7 +469,7 @@ export default function Randevular() {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'pending': return 'Bekliyor';
-      case 'accepted': return 'Onaylandı';
+      case 'accepted': return 'Başladı';
       case 'completed': return 'Tamamlandı';
       case 'cancelled': return 'İptal Edildi';
       default: return status;
@@ -429,10 +486,6 @@ export default function Randevular() {
     }
   };
 
-  const handlePauseSession = () => {
-    setShowStartModal(false);
-  };
-  
   return (
     <DashboardLayout>
       <div className={styles.randevularContainer}>
@@ -451,6 +504,16 @@ export default function Randevular() {
               Randevu Oluştur
             </button>
           )}
+
+          {userProfile?.userType === 'caregiver' && (
+            <button 
+              className={styles.deleteAllButton}
+              onClick={() => setShowDeleteAllModal(true)}
+            >
+              <FontAwesomeIcon icon={faTrashAlt} />
+              Tüm Randevuları Sil
+            </button>
+          )}
         </div>
 
         {error && (
@@ -459,7 +522,40 @@ export default function Randevular() {
             <p>{error}</p>
           </div>
         )}
-        
+          {userProfile?.userType === 'caregiver' && (
+          <div className={styles.searchContainer}>
+            <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Hasta adı, tarih veya not ile ara..."
+              className={styles.searchInput}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button
+                className={styles.searchClearButton}
+                onClick={() => setSearchQuery('')}
+                title="Aramayı Temizle"
+              >
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            )}
+          </div>
+        )}        {userProfile?.userType === 'caregiver' && searchQuery && (
+          <div className={styles.searchResults}>
+            <p>
+              <FontAwesomeIcon icon={faSearch} className={styles.searchResultIcon} />
+              <strong>&ldquo;{searchQuery}&rdquo;</strong> için {sortedAppointments.length} sonuç bulundu
+              {sortedAppointments.length > 0 && filter !== 'all' && (
+                <> ({filter === 'upcoming' ? 'yaklaşan' : filter === 'pending' ? 'bekleyen' : 
+                     filter === 'accepted' ? 'onaylanan' : filter === 'completed' ? 'tamamlanan' : 
+                     filter === 'cancelled' ? 'iptal edilen' : filter === 'today' ? 'bugünkü' : 'geçmiş'} randevularda)</>
+              )}
+            </p>
+          </div>
+        )}
+
         <div className={styles.filterContainer}>
           <div className={styles.filterLabel}>
             <FontAwesomeIcon icon={faFilter} className={styles.filterIcon} />
@@ -500,25 +596,44 @@ export default function Randevular() {
         </div>
 
         {isLoading ? (
-          <div className={styles.loading}>Randevular yükleniyor...</div>
-        ) : sortedAppointments.length === 0 ? (
+          <div className={styles.loading}>Randevular yükleniyor...</div>        ) : sortedAppointments.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>Gösterilecek randevu bulunamadı.</p>
-            <button 
-              className={styles.resetFilterButton} 
-              onClick={() => setFilter('all')}
-            >
-              Tüm Randevuları Göster
-            </button>
+            {searchQuery ? (
+              <>
+                <p>Aramanızla eşleşen randevu bulunamadı.</p>
+                <button 
+                  className={styles.resetFilterButton} 
+                  onClick={() => {
+                    setSearchQuery('');
+                    setFilter('all');
+                  }}
+                >
+                  Aramaları ve Filtreleri Temizle
+                </button>
+              </>
+            ) : (
+              <>
+                <p>Gösterilecek randevu bulunamadı.</p>
+                <button 
+                  className={styles.resetFilterButton} 
+                  onClick={() => setFilter('all')}
+                >
+                  Tüm Randevuları Göster
+                </button>
+              </>
+            )}
           </div>
         ) : (
           <div className={styles.randevuList}>
             {sortedAppointments.map((appointment) => (
               <div key={appointment.id} className={styles.appointmentCard}>
-                <div className={styles.appointmentInfo}>
-                    <div className={styles.appointmentDate}>
+                <div className={styles.appointmentInfo}>                    <div className={styles.appointmentDate}>
                     {format(parseISO(appointment.date), 'dd MMMM yyyy', { locale: tr })}
-                    <span className={styles.appointmentTime}>{appointment.date.split("T")[1].split(":").slice(0, 2).join(":")}</span>
+                    <span className={styles.appointmentTime}>
+                      {appointment.date.includes("T") 
+                        ? appointment.date.split("T")[1].split(":").slice(0, 2).join(":")
+                        : appointment.time || ""}
+                    </span>
                     </div>
                   
                   {userProfile?.userType === 'patient' && (
@@ -591,7 +706,7 @@ export default function Randevular() {
                           className={styles.continueButton}
                           onClick={() => handleStartAppointment(appointment)}
                         >
-                          Seansa Devam Et
+                          Devam Et
                         </button>
                       )}
                       
@@ -1012,6 +1127,35 @@ export default function Randevular() {
                   Seansı Tamamla
                 </button>
               </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* Tüm Randevuları Sil Modal */}
+      {showDeleteAllModal && (
+        <Modal title="Tüm Randevuları Sil" onClose={() => setShowDeleteAllModal(false)}>
+          <div className={styles.deleteAllModalContent}>
+            <p>
+              Tüm randevuları silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+            </p>
+            <div className={styles.formActions}>
+              <button 
+                type="button" 
+                className={styles.cancelModalButton}
+                onClick={() => setShowDeleteAllModal(false)}
+                disabled={deletingAll}
+              >
+                İptal
+              </button>
+              <button 
+                type="button" 
+                className={styles.deleteButton}
+                onClick={handleDeleteAllAppointments}
+                disabled={deletingAll}
+              >
+                {deletingAll ? 'Siliniyor...' : 'Tümünü Sil'}
+              </button>
             </div>
           </div>
         </Modal>

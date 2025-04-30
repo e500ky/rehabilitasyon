@@ -7,10 +7,13 @@ import Link from 'next/link';
 import router from 'next/router';
 import React from 'react';
 import Navigation from '../Navigation';
+import ThemeToggle from '../ThemeToggle';
 import styles from './Header.module.css';
 
 const Header: React.FC = () => {
   const { currentUser } = useAuth();
+  
+  console.log('Header: Kullanıcı durumu:', !!currentUser);
 
   const handleSignOut = async () => {
     try {
@@ -25,8 +28,7 @@ const Header: React.FC = () => {
   return (
     <header className={styles.header}>
       <div className={styles.mainHeader}>
-        <div className={styles.container}>
-          <div className={styles.logoContainer}>
+        <div className={styles.container}>          <div className={styles.logoContainer}>
             <Link href="/" style={{ width: '200px'}}>
               <Image 
                 src="/logo.png" 
@@ -38,7 +40,18 @@ const Header: React.FC = () => {
               />
             </Link>
           </div>
+          
           <Navigation isAuthenticated={!!currentUser} />
+            {currentUser ? (
+            <div className={styles.themeToggleContainer}>
+              <ThemeToggle />
+            </div>
+          ) : (
+            <div style={{ marginRight: '10px', fontSize: '0.8rem', color: 'var(--text-light)' }}>
+              {/* Oturum açık değil, tema butonu görünmüyor */}
+            </div>
+          )}
+          
           {!currentUser ? (
           <>
               <div>

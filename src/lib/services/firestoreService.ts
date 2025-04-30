@@ -306,6 +306,32 @@ const firestoreService = {
     }
   },
   
+  deleteAllCaregiverAppointments: async (caregiverId: string): Promise<void> => {
+    try {
+      // Önce kullanıcının tüm randevularını alıyoruz
+      const appointmentsRef = collection(db, 'appointments');
+      const q = query(
+        appointmentsRef,
+        where('caregiverId', '==', caregiverId)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      
+      // Her randevuyu tek tek siliyoruz
+      const deletePromises = querySnapshot.docs.map(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+      
+      // Tüm silme işlemlerinin tamamlanmasını bekliyoruz
+      await Promise.all(deletePromises);
+      
+      return;
+    } catch (error) {
+      console.error('Tüm randevuları silme hatası:', error);
+      throw error;
+    }
+  },
+  
   createCaregiverPatientRelation: async (caregiverId: string, patientId: string): Promise<string> => {
     try {
       
@@ -754,6 +780,37 @@ const firestoreService = {
       return true;
     } catch (error) {
       console.error('Pozisyon verisi silme hatası:', error);
+      throw error;
+    }
+  },
+
+  // Tüm randevuları silme fonksiyonu: Bakıcı ID'sine göre
+  deleteCaregiverAllAppointments: async (caregiverId: string): Promise<{count: number, success: boolean}> => {
+    try {
+      // Bakıcıya ait tüm randevuları sorgula
+      const appointmentsRef = collection(db, 'appointments');
+      const q = query(
+        appointmentsRef,
+        where('caregiverId', '==', caregiverId)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      let deletedCount = 0;
+      
+      // Tüm belgeleri sil
+      const deletePromises = querySnapshot.docs.map(async (doc) => {
+        await deleteDoc(doc.ref);
+        deletedCount++;
+      });
+      
+      await Promise.all(deletePromises);
+      
+      return {
+        count: deletedCount,
+        success: true
+      };
+    } catch (error) {
+      console.error('Tüm randevuları silme hatası:', error);
       throw error;
     }
   },

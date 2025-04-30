@@ -1,104 +1,133 @@
 .appointmentFormContainer {
-  padding: 1rem;
+  padding: var(--spacing-md);
+  width: 100%;
 }
 
 .appointmentForm {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--spacing-lg);
+  max-width: 100%;
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--spacing-xs);
 }
 
 .formGroup label {
   font-weight: 500;
-  color: #4a5568;
+  color: var(--text-medium);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-xs);
+  font-size: 0.95rem;
 }
 
 .formGroup label svg {
-  color: #4dabf7;
+  color: var(--primary-color);
 }
 
 .required {
   color: #e53e3e;
   font-weight: bold;
+  margin-left: var(--spacing-xs);
 }
 
 .formGroup input,
-.formGroup textarea {
+.formGroup textarea,
+.formGroup select {
   padding: 0.8rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
   font-size: 1rem;
   transition: all 0.2s;
+  width: 100%;
+  background-color: white;
 }
 
 .formGroup input:focus,
-.formGroup textarea:focus {
+.formGroup textarea:focus,
+.formGroup select:focus {
   outline: none;
-  border-color: #4dabf7;
-  box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.2);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.15);
 }
 
 .errorMessage {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem;
+  display: flex;  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
   background-color: #fff5f5;
   border-left: 3px solid #e53e3e;
   color: #e53e3e;
-  border-radius: 5px;
-  font-size: 0.95rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  margin-top: var(--spacing-xs);
 }
 
 .formActions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  flex-wrap: wrap;
 }
 
 .cancelButton {
   padding: 0.7rem 1.5rem;
-  background-color: #e2e8f0;
-  color: #4a5568;
-  border: none;
-  border-radius: 5px;
+  background-color: var(--bg-light);
+  color: var(--text-medium);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  text-align: center;
 }
 
 .cancelButton:hover {
-  background-color: #cbd5e0;
+  background-color: #e9ecef;
+}
+
+.cancelButton:active {
+  transform: translateY(1px);
 }
 
 .submitButton {
   padding: 0.7rem 1.5rem;
-  background-color: #4dabf7;
+  background-color: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
 }
 
 .submitButton:hover {
-  background-color: #339af0;
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(77, 171, 247, 0.25);
+}
+
+.submitButton:active {
+  transform: translateY(0);
 }
 
 .submitButton:disabled {
   background-color: #a0d2f8;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .successMessage {
@@ -106,34 +135,62 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 2rem;
+  padding: var(--spacing-xl);
+  background-color: #f0fff4;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-light);
+  margin: var(--spacing-md) 0;
 }
 
 .successIcon {
   font-size: 3rem;
   color: #48bb78;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-lg);
 }
 
 .successMessage h3 {
   font-size: 1.5rem;
-  color: #2d3748;
-  margin-bottom: 0.8rem;
+  color: var(--text-dark);
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
 }
 
 .successMessage p {
-  color: #718096;
-  max-width: 80%;
+  color: var(--text-medium);
+  max-width: 90%;
+  line-height: 1.5;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .formGroup label {
+    font-size: 0.9rem;
+  }
+  
+  .formGroup input,
+  .formGroup textarea,
+  .formGroup select {
+    font-size: 0.95rem;
+  }
+  
+  .successMessage {
+    padding: var(--spacing-lg);
+  }
 }
 
 @media (max-width: 576px) {
   .formActions {
     flex-direction: column-reverse;
+    gap: var(--spacing-sm);
   }
   
   .cancelButton,
   .submitButton {
     width: 100%;
     text-align: center;
+  }
+  
+  .successMessage p {
+    max-width: 100%;
   }
 }

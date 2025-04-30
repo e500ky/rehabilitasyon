@@ -1,14 +1,15 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: var(--spacing-md);
+  width: 100%;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-lg);
 }
 
 .title {
@@ -17,13 +18,15 @@
 
 .title h1 {
   font-size: 1.8rem;
-  color: #1a1a2e;
-  margin-bottom: 0.5rem;
+  color: var(--text-dark);
+  margin-bottom: var(--spacing-xs);
+  font-weight: 600;
 }
 
 .subtitle {
-  color: #6c757d;
+  color: var(--text-light);
   font-size: 1rem;
+  line-height: 1.5;
 }
 
 .refreshButton {
@@ -35,43 +38,50 @@
   background: none;
   border: none;
   border-radius: 50%;
-  color: #4dabf7;
+  color: var(--primary-color);
   font-size: 1.1rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .refreshButton:hover {
-  background-color: #e7f5ff;
+  background-color: var(--primary-light);
+  transform: rotate(45deg);
+}
+
+.refreshButton:active {
+  transform: rotate(90deg);
 }
 
 .refreshButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
 .errorMessage {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
   background-color: #fff5f5;
   border-left: 4px solid #e03131;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 .errorMessage svg {
   margin-top: 0.2rem;
   color: #e03131;
+  flex-shrink: 0;
 }
 
 .filtersRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  gap: 1rem;
+  margin-bottom: var(--spacing-lg);
+  gap: var(--spacing-md);
   flex-wrap: wrap;
 }
 
@@ -83,62 +93,80 @@
 
 .searchIcon {
   position: absolute;
-  left: 1rem;
+  left: var(--spacing-md);
   top: 50%;
   transform: translateY(-50%);
-  color: #adb5bd;
+  color: var(--text-light);
+  pointer-events: none;
 }
 
 .searchInput {
-  width: calc(100% - 100px);
+  width: 100%;
   padding: 0.7rem 2.5rem;
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
   font-size: 0.95rem;
+  transition: all 0.2s ease;
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: #4dabf7;
-  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.15);
 }
 
 .clearButton {
   position: absolute;
-  right: 1rem;
+  right: var(--spacing-md);
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #adb5bd;
+  color: var(--text-light);
   cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
 }
 
 .clearButton:hover {
-  color: #495057;
+  color: var(--text-dark);
+  background-color: var(--bg-light);
 }
 
 .statusFilter {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: #495057;
+  gap: var(--spacing-xs);
+  color: var(--text-medium);
+  white-space: nowrap;
 }
 
 .statusSelect {
-  padding: 0.5rem;
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
+  padding: 0.7rem var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
   background: white;
-  color: #495057;
+  color: var(--text-medium);
   font-size: 0.95rem;
-  min-width: 140px;
+  min-width: 160px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 16px;
+  padding-right: 2.5rem;
+  transition: all 0.2s ease;
 }
 
 .statusSelect:focus {
   outline: none;
-  border-color: #4dabf7;
-  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.15);
 }
 
 .loading {
@@ -161,7 +189,6 @@
   border-radius: 8px;
   padding: 3rem 2rem;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -193,11 +220,12 @@
 
 .appointmentCard {
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-light);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
+  border: 1px solid var(--border-color);
 }
 
 .appointmentCard:hover {
@@ -452,11 +480,17 @@
 }
 
 /* Responsive */
+@media (max-width: 992px) {
+  .container {
+    padding: var(--spacing-sm);
+  }
+}
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: var(--spacing-md);
   }
   
   .refreshButton {
@@ -467,15 +501,71 @@
   .filtersRow {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+
+  .searchBox {
+    margin-bottom: var(--spacing-xs);
   }
 
   .detailItem {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--spacing-xs);
+    align-items: flex-start;
   }
   
   .detailLabel {
     flex-direction: row;
     align-items: center;
+    min-width: auto;
+  }
+
+  .notes {
+    padding: var(--spacing-md);
+  }
+
+  .notes h3 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .title h1 {
+    font-size: 1.5rem;
+  }
+  
+  .subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .appointmentCard {
+    border-radius: var(--radius-sm);
+  }
+  
+  .emptyState {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+  
+  .emptyIcon {
+    font-size: 3rem;
+  }
+  
+  .emptyState h3 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .container {
+    padding: var(--spacing-xs);
+  }
+  
+  .searchInput {
+    font-size: 0.9rem;
+    padding: 0.6rem 2.5rem;
+  }
+
+  .statusSelect {
+    font-size: 0.9rem;
   }
 }

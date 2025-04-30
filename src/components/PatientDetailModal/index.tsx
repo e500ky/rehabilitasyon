@@ -150,9 +150,8 @@ export default function PatientDetailModal({ patient, onClose }: PatientDetailMo
                       <div className={styles.statIcon}>
                         <FontAwesomeIcon icon={faChartLine} />
                       </div>
-                      <div className={styles.statInfo}>
-                        <h3>İlerleme</h3>
-                        <div className={styles.statValue}>%{patient.stats?.progressPercentage || 0}</div>
+                      <div className={styles.statInfo}>                        <h3>İlerleme</h3>
+                        <div className={styles.statValue}>%{isNaN(patient.stats?.progressPercentage || 0) ? 0 : (patient.stats?.progressPercentage || 0).toFixed(2)}</div>
                       </div>
                     </div>
 
@@ -179,10 +178,9 @@ export default function PatientDetailModal({ patient, onClose }: PatientDetailMo
                       <span className={styles.progressValue}>
                         {new Date(lastProgress.date).toLocaleDateString('tr-TR')}
                       </span>
-                    </div>
-                    <div className={styles.progressDetail}>
+                    </div>                    <div className={styles.progressDetail}>
                       <span className={styles.progressLabel}>İlerleme Oranı:</span>
-                      <span className={styles.progressValue}>{lastProgress.progress}%</span>
+                      <span className={styles.progressValue}>{parseFloat(lastProgress.progress).toFixed(2)}%</span>
                     </div>
                     <div className={styles.progressDetail}>
                       <span className={styles.progressLabel}>Ağrı Seviyesi:</span>
@@ -226,11 +224,10 @@ export default function PatientDetailModal({ patient, onClose }: PatientDetailMo
                             <th>İlerleme</th>
                           </tr>
                         </thead>
-                        <tbody>
-                          {patient.progress.data.map((item: any, index: number) => (
+                        <tbody>                          {patient.progress.data.map((item: any, index: number) => (
                             <tr key={index}>
                               <td>{new Date(item.date).toLocaleDateString('tr-TR')}</td>
-                              <td>{item.progress}%</td>
+                              <td>{parseFloat(item.progress).toFixed(2)}%</td>
                               <td>{item.painLevel}/10</td>
                             </tr>
                           ))}

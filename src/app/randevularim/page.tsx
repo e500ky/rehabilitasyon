@@ -32,7 +32,7 @@ interface Appointment {
 
 const statusLabels: Record<string, { label: string; className: string }> = {
   pending: { label: 'Beklemede', className: styles.statusPending },
-  accepted: { label: 'Onaylandı', className: styles.statusAccepted },
+  accepted: { label: 'Başladı', className: styles.statusAccepted },
   completed: { label: 'Tamamlandı', className: styles.statusCompleted },
   cancelled: { label: 'İptal Edildi', className: styles.statusCancelled }
 };
@@ -203,7 +203,7 @@ export default function PatientAppointmentsPage() {
             >
               <option value="all">Tümü</option>
               <option value="pending">Beklemede</option>
-              <option value="accepted">Onaylandı</option>
+              <option value="accepted">Başladı</option>
               <option value="completed">Tamamlandı</option>
               <option value="cancelled">İptal Edildi</option>
             </select>

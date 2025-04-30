@@ -30,7 +30,7 @@ export const getStatusLabel = (status: string): { label: string; colorClass: str
     case 'pending':
       return { label: 'Beklemede', colorClass: 'statusPending' };
     case 'accepted':
-      return { label: 'Onaylandı', colorClass: 'statusAccepted' };
+      return { label: 'Başladı', colorClass: 'statusAccepted' };
     case 'completed':
       return { label: 'Tamamlandı', colorClass: 'statusCompleted' };
     case 'cancelled':

@@ -2,8 +2,8 @@
 
 import { useAuth } from '@/context/AuthContext';
 import authService from '@/lib/services/authService';
-import firestoreService from '@/lib/services/firestoreService'; 
-import { UserProfile } from '@/types/user'; 
+import firestoreService from '@/lib/services/firestoreService';
+import { UserProfile } from '@/types/user';
 import {
   faBars,
   faCalendarAlt,
@@ -17,11 +17,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState } from 'react';
 import styles from './Sidebar.module.css';
 
-const Sidebar: React.FC = () => {
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+interface SidebarProps {
+  isOpen: boolean;
+  toggleSidebar: () => void;
+  isMobileView: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, isMobileView }) => {
   const { currentUser } = useAuth();
   const router = useRouter();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null); 
@@ -48,10 +53,6 @@ const Sidebar: React.FC = () => {
 
     fetchProfile();
   }, [currentUser]);
-
-  const toggleMobileSidebar = () => {
-    setIsMobileOpen(!isMobileOpen);
-  };
 
   const handleSignOut = async () => {
     try {
@@ -84,15 +85,19 @@ const Sidebar: React.FC = () => {
 
   return (
     <>
-      <div className={styles.mobileToggle} onClick={toggleMobileSidebar}>
-        <FontAwesomeIcon icon={isMobileOpen ? faTimes : faBars} />
-      </div>
+      {isMobileView && (
+        <div className={styles.mobileToggle} onClick={toggleSidebar}>
+          <FontAwesomeIcon icon={isOpen ? faTimes : faBars} />
+        </div>
+      )}
       
       <div className={`
         ${styles.sidebar} 
-        ${isMobileOpen ? styles.mobileOpen : ''}
+        ${isOpen ? styles.sidebarOpen : ''}
+        ${isMobileView ? styles.mobile : ''}
       `}>
         <div className={styles.sidebarHeader}>
+          
           <div className={styles.logoContainer}>
             <Link href="/dashboard">
               <Image 
@@ -123,7 +128,7 @@ const Sidebar: React.FC = () => {
             <ul className={styles.navList}>
               {linksToShow.map(link => ( 
                 <li className={styles.navItem} key={link.href}>
-                  <Link href={link.href} className={styles.navLink} onClick={() => setIsMobileOpen(false)}> 
+                  <Link href={link.href} className={styles.navLink} onClick={() => isMobileView && toggleSidebar()}> 
                     <FontAwesomeIcon icon={link.icon} className={styles.navIcon} />
                     <span>{link.text}</span>
                   </Link>
@@ -140,6 +145,9 @@ const Sidebar: React.FC = () => {
           </button>
         </div>
       </div>
+      {isOpen && isMobileView && (
+        <div className={styles.overlay} onClick={toggleSidebar} />
+      )}
     </>
   );
 };

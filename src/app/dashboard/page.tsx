@@ -176,11 +176,10 @@ export default function Dashboard() {
       
       const stats = await firestoreService.getUserStats(patient.id);
       const progress = await firestoreService.getUserProgress(patient.id);
-      
-      let progressAverage = 0;
+        let progressAverage = 0;
       if (progress && progress.data && progress.data.length > 0) {
         const progressSum = progress.data.reduce((total: number, point: ProgressDataPoint) => total + point.progress, 0);
-        progressAverage = Math.round(progressSum / progress.data.length);
+        progressAverage = progressSum / progress.data.length;
         
         const updatedStats = stats || {};
         updatedStats.progressPercentage = progressAverage;
@@ -280,10 +279,9 @@ export default function Dashboard() {
                     <div className={patientStyles.statValue}>{selectedPatient.stats.totalCollectedApples || 0}</div>
                   </div>
                   
-                  <div className={patientStyles.statItem}>
-                    <div className={patientStyles.statTitle}>İlerleme</div>
+                  <div className={patientStyles.statItem}>                    <div className={patientStyles.statTitle}>İlerleme</div>
                     <div className={patientStyles.statValue}>
-                      %{selectedPatient.stats.progressPercentage || 0}
+                      %{isNaN(selectedPatient.stats.progressPercentage || 0) ? 0 : (selectedPatient.stats.progressPercentage || 0).toFixed(2)}
                     </div>
                   </div>
                   

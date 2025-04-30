@@ -1,0 +1,80 @@
+.themeToggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: var(--bg-light);
+  cursor: pointer;
+  border-radius: 50%;
+  color: var(--text-medium);
+  transition: all 0.3s ease;
+  padding: 8px;
+  margin-left: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.themeToggle:hover {
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  transform: rotate(15deg);
+}
+
+.themeIcon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.themeToggle:active .themeIcon {
+  transform: scale(0.9);
+}
+
+/* Animasyonlar */
+.sunIcon, .moonIcon {
+  position: absolute;
+  transition: opacity 0.3s ease, transform 0.5s ease;
+}
+
+.sunIcon {
+  color: #fd7e14;
+}
+
+.moonIcon {
+  color: #9775fa;
+}
+
+/* Light tema aktifken moon gizli, sun görünür */
+[data-theme='light'] .moonIcon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+}
+
+[data-theme='light'] .sunIcon {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+/* Dark tema aktifken sun gizli, moon görünür */
+[data-theme='dark'] .sunIcon {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+
+[data-theme='dark'] .moonIcon {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+/* Yalnızca mobil için daha büyük tıklama alanı */
+@media (max-width: 768px) {
+  .themeToggle {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .themeIcon {
+    font-size: 1.3rem;
+  }
+}

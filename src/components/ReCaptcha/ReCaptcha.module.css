@@ -1,5 +1,5 @@
 .recaptchaContainer {
-  margin: 1.5rem 0;
+  margin: var(--spacing-lg) 0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -17,23 +17,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.8rem 1rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
-  color: #6c757d;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--bg-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-light);
   font-size: 0.9rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-xs);
   width: 100%;
   max-width: 302px;
-  border: 1px dashed #ced4da;
+  border: 1px dashed var(--border-color-dark);
 }
 
 .recaptchaError {
-  padding: 1rem;
-  background-color: #fff3f3;
-  border-left: 4px solid #ff4d4f;
-  color: #cf1322;
-  margin: 1rem 0;
+  padding: var(--spacing-md);
+  background-color: var(--error-light);
+  border-left: 4px solid var(--error-color);
+  color: var(--error-color);
+  margin: var(--spacing-md) 0;
   font-size: 0.9rem;
   width: 100%;
   max-width: 500px;
@@ -41,22 +41,22 @@
 
 .recaptchaError p:first-child {
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-xs);
 }
 
 .recaptchaError p:last-child {
-  color: #6c757d;
+  color: var(--text-light);
   font-size: 0.85rem;
 }
 
 .devModeNotice {
-  padding: 0.8rem;
-  background-color: #f0f9ff;
-  border: 1px dashed #91caff;
-  color: #1677ff;
-  border-radius: 4px;
+  padding: var(--spacing-sm);
+  background-color: var(--info-light);
+  border: 1px dashed var(--info-color);
+  color: var(--info-color);
+  border-radius: var(--radius-sm);
   text-align: center;
-  margin: 1rem auto;
+  margin: var(--spacing-md) auto;
   width: 100%;
   max-width: 302px;
 }

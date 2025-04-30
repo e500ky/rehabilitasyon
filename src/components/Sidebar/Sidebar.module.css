@@ -1,25 +1,54 @@
 .sidebar {
   width: 260px;
   height: 100vh;
-  background-color: #ffffff;
+  background-color: var(--bg-component);
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-light);
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
-  border-right: 1px solid #e9ecef;
+  border-right: 1px solid var(--border-color);
+  transform: translateX(0);
 }
 
+.sidebar.mobile {
+  transform: translateX(-100%);
+}
+
+.sidebar.mobile.sidebarOpen {
+  transform: translateX(0);
+}
 
 .sidebarHeader {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem 1rem;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+}
+
+.collapseButton {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.7rem;
+  color: var(--text-medium);
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .logoContainer {
@@ -37,22 +66,23 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .userAvatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #e9f5ff;
+  background-color: var(--primary-light);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .avatarIcon {
   font-size: 1.8rem;
-  color: #4dabf7;
+  color: var(--primary-color);
 }
 
 .userDetails {
@@ -66,7 +96,7 @@
   font-size: 1rem;
   font-weight: 600;
   margin: 0;
-  color: #1a1a2e;
+  color: var(--text-dark);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis; /* Uzun metinler için elipsis */
@@ -74,7 +104,7 @@
 
 .userEmail {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--text-light);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -103,14 +133,14 @@
   gap: 1rem;
   padding: 0.8rem 1.5rem;
   text-decoration: none;
-  color: #555;
+  color: var(--text-medium);
   transition: all 0.2s ease;
   position: relative;
 }
 
 .navLink:hover, .navLink.active {
-  background-color: rgba(77, 171, 247, 0.1);
-  color: #4dabf7;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
 }
 
 .navLink.active::before {
@@ -120,7 +150,7 @@
   top: 0;
   height: 100%;
   width: 4px;
-  background-color: #4dabf7;
+  background-color: var(--primary-color);
 }
 
 .navIcon {
@@ -131,7 +161,7 @@
 
 .sidebarFooter {
   padding: 1.5rem 1rem;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--border-color);
 }
 
 .logoutButton {
@@ -142,16 +172,17 @@
   width: 100%;
   padding: 0.8rem;
   border: none;
-  border-radius: 6px;
-  background-color: #fff2f2;
-  color: #e03131;
+  border-radius: var(--radius-sm);
+  background-color: var(--error-light);
+  color: var(--error-color);
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
 }
 
 .logoutButton:hover {
-  background-color: #ffe3e3;
+  background-color: var(--error-light);
+  filter: brightness(0.95);
 }
 
 .logoutIcon {
@@ -159,36 +190,38 @@
 }
 
 .mobileToggle {
-  display: none;
+  display: flex;
   position: fixed;
   top: 1rem;
-  right: 1rem;
+  left: 1rem;
   z-index: 1001;
-  font-size: 1.5rem;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background-color: #ffffff;
-  color: #333;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-light);
+  color: var(--text-medium);
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-light);
   cursor: pointer;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--border-color);
+  font-size: 1.2rem;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: block;
 }
 
 @media (max-width: 992px) {
   .sidebar {
-    transform: translateX(-100%);
-    width: 260px;
-  }
-  
-  .sidebar.mobileOpen {
-    transform: translateX(0);
-  }
-  
-  .mobileToggle {
-    display: flex;
+    width: 280px;
   }
   
   .userInfo {
@@ -197,5 +230,23 @@
   
   .userDetails {
     display: flex;
+  }
+}
+
+@media (max-width: 576px) {
+  .sidebar {
+    width: 85%;
+    max-width: 320px;
+  }
+  
+  .mobileToggle {
+    top: 0.8rem;
+    left: 0.8rem;
+    width: 36px;
+    height: 36px;
+  }
+  
+  .userDetails {
+    max-width: 150px;
   }
 }

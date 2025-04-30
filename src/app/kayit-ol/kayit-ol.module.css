@@ -270,3 +270,108 @@
     flex-direction: column;
   }
 }
+
+/* Telefon doğrulama ile ilgili stiller */
+.phoneVerificationContainer {
+  display: flex;
+  position: relative;
+  width: 100%;
+}
+
+.verifyButton {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.verifyButton:hover {
+  background-color: #005fc3;
+}
+
+.verifyButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.verificationCodeContainer {
+  display: flex;
+  margin-top: 8px;
+  gap: 8px;
+}
+
+.verificationCodeInput {
+  flex: 1;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+.verifyCodeButton {
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.verifyCodeButton:hover {
+  background-color: #005fc3;
+}
+
+.verifyCodeButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.verifiedBadge {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #4caf50;
+  color: white;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.verifiedIcon {
+  font-size: 0.85rem;
+}
+
+.errorMessage {
+  background-color: #fff2f2;
+  color: #d32f2f;
+  padding: 0.8rem;
+  border-radius: 4px;
+  border-left: 4px solid #d32f2f;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recaptchaContainer {
+  min-height: 60px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  position: relative;
+}

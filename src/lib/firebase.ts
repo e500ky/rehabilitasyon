@@ -11,6 +11,11 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
+// Firebase yapılandırması kontrolleri
+if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+  console.error("Firebase API KEY eksik! .env dosyasını kontrol edin.");
+}
+
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);

@@ -3,98 +3,128 @@
 }
 
 .welcomeSection {
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-xl);
+  background: linear-gradient(to right, #e0f7fe, #c5e8ff);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-lg);
 }
 
 .welcomeSection h1 {
   font-size: 1.8rem;
-  color: #1a1a2e;
-  margin-bottom: 0.5rem;
+  color: var(--text-dark);
+  margin-bottom: var(--spacing-xs);
 }
 
 .welcomeSection p {
-  color: #6c757d;
+  color: var(--text-medium);
 }
 
 .statsContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
 }
 
 .statBox {
   background-color: white;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-light);
   text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.statBox:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-medium);
 }
 
 .statBox h3 {
   font-size: 1rem;
-  color: #6c757d;
-  margin-bottom: 0.8rem;
+  color: var(--text-light);
+  margin-bottom: var(--spacing-sm);
 }
 
 .statValue {
   font-size: 2.2rem;
   font-weight: 700;
-  color: #4dabf7;
+  color: var(--primary-color);
 }
 
 .sectionsContainer {
   display: grid;
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
 }
 
 .pendingAppointmentsSection,
 .patientsSection {
   background-color: white;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-light);
+  transition: box-shadow 0.2s ease;
+}
+
+.pendingAppointmentsSection:hover,
+.patientsSection:hover {
+  box-shadow: var(--shadow-medium);
 }
 
 .sectionHeader {
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.8rem;
-  border-bottom: 1px solid #e9ecef;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .sectionHeader h2 {
   font-size: 1.2rem;
-  color: #1a1a2e;
+  color: var(--text-dark);
   display: flex;
   align-items: center;
+  margin: 0;
 }
 
 .sectionIcon {
-  color: #4dabf7;
-  margin-right: 0.8rem;
+  color: var(--primary-color);
+  margin-right: var(--spacing-sm);
+  font-size: 1.2rem;
 }
 
 .emptyState {
-  padding: 2rem;
+  padding: var(--spacing-xl);
   text-align: center;
-  color: #6c757d;
+  color: var(--text-light);
+  background-color: var(--bg-light);
+  border-radius: var(--radius-sm);
+  margin: var(--spacing-md) 0;
 }
 
 .appointmentsList {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--spacing-md);
 }
 
 .appointmentCard {
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  justify-content: space-between;
-  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;  justify-content: space-between;
+  padding: var(--spacing-md);
   display: flex;
-  gap: 2rem;
+  gap: var(--spacing-lg);
   flex-direction: row;
   align-items: flex-start;
+}
+
+.appointmentCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-light);
+  border-color: var(--primary-light);
 }
 
 .appointmentInfo {
@@ -103,51 +133,57 @@
 
 .appointmentInfo h3 {
   font-size: 1.1rem;
-  color: #1a1a2e;
-  margin-bottom: 0.5rem;
+  color: var(--text-dark);
   margin-top: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-md);
+  font-weight: 600;
 }
 
 .appointmentMeta {
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
   font-size: 0.9rem;
-  color: #6c757d;
-  margin-bottom: 0.5rem;
+  color: var(--text-light);
+  margin-bottom: var(--spacing-xs);
 }
 
 .appointmentMeta span {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-xs);
+  white-space: nowrap;
 }
 
 .appointmentNotes {
   font-size: 0.9rem;
-  color: #6c757d;
-  background-color: #f8f9fa;
-  padding: 0.5rem;
-  border-radius: 4px;
+  color: var(--text-light);
+  background-color: var(--bg-light);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
   margin-bottom: 0;
+  line-height: 1.5;
 }
 
 .appointmentActions {
   display: flex;
-  gap: 0.8rem;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
 }
 
 .acceptButton,
 .rejectButton {
   border: none;
   padding: 0.6rem 1rem;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-xs);
   transition: all 0.3s ease;
+  white-space: nowrap;
+  font-size: 0.9rem;
 }
 
 .acceptButton {
@@ -157,6 +193,12 @@
 
 .acceptButton:hover {
   background-color: #37b24d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(64, 192, 87, 0.25);
+}
+
+.acceptButton:active {
+  transform: translateY(0);
 }
 
 .rejectButton {
@@ -166,75 +208,109 @@
 
 .rejectButton:hover {
   background-color: #fa5252;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(250, 82, 82, 0.25);
+}
+
+.rejectButton:active {
+  transform: translateY(0);
 }
 
 .patientsList {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--spacing-md);
 }
 
 .patientCard {
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md);
   display: flex;
   align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.patientCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-light);
+  border-color: var(--primary-light);
 }
 
 .patientAvatar {
-  width: 40px;
-  height: 40px;
-  background-color: #4dabf7;
+  width: 45px;
+  height: 45px;
+  background-color: var(--primary-color);
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  margin-right: 1rem;
+  margin-right: var(--spacing-md);
+  flex-shrink: 0;
+  font-size: 1.1rem;
 }
 
 .patientInfo {
   flex: 1;
+  min-width: 0; /* Allows text truncation to work */
 }
 
 .patientInfo h3 {
   font-size: 1rem;
-  color: #1a1a2e;
-  margin-bottom: 0.2rem;
+  margin-top: 0;
+  margin-bottom: var(--spacing-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;  color: var(--text-dark);
 }
 
 .patientInfo p {
   font-size: 0.85rem;
-  color: #6c757d;
+  color: var(--text-light);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .patientMeta {
   font-size: 0.85rem;
-  color: #6c757d;
-  margin-right: 1rem;
+  color: var(--text-light);
+  margin-right: var(--spacing-md);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs) var(--spacing-md);
 }
 
 .patientMeta span {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-xs);
+  white-space: nowrap;
 }
 
 .viewButton {
-  background-color: #f8f9fa;
-  color: #1a1a2e;
-  border: 1px solid #e9ecef;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  border: 1px solid var(--border-color);
   padding: 0.5rem 1rem;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   font-size: 0.85rem;
   text-decoration: none;
   transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
 }
 
 .viewButton:hover {
-  background-color: #e9ecef;
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
 }
 
 .addPatientButton {

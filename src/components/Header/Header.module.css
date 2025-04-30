@@ -1,18 +1,20 @@
 .header {
   width: 100%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-light);
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
-  background-color: #ffffff;
+  background-color: var(--bg-component);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .topBar {
-  background-color: #e9f5ff;
+  background-color: var(--primary-light);
   padding: 8px 0;
   font-size: 0.9rem;
-  color: #1a1a2e;
+  color: var(--text-dark);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .contactInfo {
@@ -49,7 +51,14 @@
 
 .loginLink:hover {
   background-color: #005fc3;
-  color: white;
+}
+
+.themeToggleContainer {
+  display: flex;
+  align-items: center;
+  margin-right: var(--spacing-md);
+  z-index: 10;
+  position: relative;
 }
 
 .logoutButton {

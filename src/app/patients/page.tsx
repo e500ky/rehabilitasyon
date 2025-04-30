@@ -7,14 +7,14 @@ import { useAuth } from '@/context/AuthContext';
 import firestoreService from '@/lib/services/firestoreService';
 import { ProgressDataPoint } from '@/types/user';
 import {
-  faCalendarPlus,
-  faExclamationTriangle,
-  faSearch,
-  faSyncAlt,
-  faTimes,
-  faTrashAlt,
-  faUser,
-  faUserPlus
+    faCalendarPlus,
+    faExclamationTriangle,
+    faSearch,
+    faSyncAlt,
+    faTimes,
+    faTrashAlt,
+    faUser,
+    faUserPlus
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -136,11 +136,10 @@ export default function PatientsPage() {
       
       const stats = await firestoreService.getUserStats(patient.id);
       const progress = await firestoreService.getUserProgress(patient.id);
-      
-      let progressAverage = 0;
+        let progressAverage = 0;
       if (progress && progress.data && progress.data.length > 0) {
         const progressSum = progress.data.reduce((total: number, point: ProgressDataPoint) => total + point.progress, 0);
-        progressAverage = Math.round(progressSum / progress.data.length);
+        progressAverage = progressSum / progress.data.length;
         
         const updatedStats = stats || {};
         updatedStats.progressPercentage = progressAverage;
@@ -240,10 +239,9 @@ export default function PatientsPage() {
                       <div className={styles.statValue}>{selectedPatient.stats.totalCollectedApples || 0}</div>
                   </div>
                   
-                  <div className={styles.statItem}>
-                    <div className={styles.statTitle}>İlerleme</div>
+                  <div className={styles.statItem}>                    <div className={styles.statTitle}>İlerleme</div>
                     <div className={styles.statValue}>
-                      %{selectedPatient.stats.progressPercentage || 0}
+                      %{isNaN(selectedPatient.stats.progressPercentage || 0) ? 0 : (selectedPatient.stats.progressPercentage || 0).toFixed(2)}
                     </div>
                   </div>
                   

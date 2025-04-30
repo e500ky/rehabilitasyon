@@ -2,8 +2,11 @@ export interface UserProfile {
   uid: string;
   displayName: string;
   email: string;
+  phoneNumber?: string;
   photoURL: string;
   userType?: 'patient' | 'caregiver';
+  emailVerified?: boolean;
+  phoneVerified?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }

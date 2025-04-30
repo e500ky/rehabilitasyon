@@ -4,65 +4,122 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 1rem;
+  padding: var(--spacing-md);
   backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .modalContainer {
-  background-color: white;
-  border-radius: 10px;
+  background-color: var(--bg-component);
+  border-radius: var(--radius-lg);
   width: 100%;
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-medium);
+  animation: slideUp 0.3s ease forwards;
+  color: var(--text-dark);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e9ecef;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
-  background-color: white;
-  z-index: 6666666666;
+  background-color: var(--bg-component);
+  z-index: 10;
   width: 100%;
   box-sizing: border-box;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-light);
+  transition: background-color 0.3s ease;
 }
 
 .modalHeader h2 {
-  font-size: 1.5rem;
-  color: #1a1a2e;
+  font-size: 1.4rem;
+  color: var(--text-dark);
   margin: 0;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.3s ease;
 }
 
 .closeButton {
   background: none;
   border: none;
   font-size: 1.2rem;
-  color: #6c757d;
+  color: var(--text-light);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
   cursor: pointer;
-  transition: color 0.3s;
+  margin-left: var(--spacing-sm);
+  flex-shrink: 0;
 }
 
 .closeButton:hover {
-  color: #343a40;
+  color: var(--text-dark);
+  background-color: var(--bg-light);
+}
+
+.closeButton:active {
+  transform: scale(0.95);
 }
 
 .modalBody {
-  padding: 1.5rem;
+  padding: var(--spacing-lg);
+  color: var(--text-medium);
+  transition: color 0.3s ease;
 }
 
-.modalBody .baslik {
+/* Remove unused style */
+/* .modalBody .baslik {
   background-color: black;
+} */
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .modalContainer {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .modalBody {
+    padding: var(--spacing-md);
+  }
+  
+  .modalHeader {
+    padding: var(--spacing-md);
+  }
+  
+  .modalHeader h2 {
+    font-size: 1.3rem;
+  }
 }
 
 @media (max-width: 576px) {
@@ -75,5 +132,9 @@
   
   .modalOverlay {
     padding: 0;
+  }
+  
+  .modalBody {
+    padding: var(--spacing-md);
   }
 }

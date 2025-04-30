@@ -5,6 +5,8 @@
   padding-top: 80px;
 }
 
+
+
 .main {
   display: flex;
   flex-direction: column;
@@ -530,4 +532,11 @@ body{
   .workflowContainer {
     flex-direction: column;
   }
+}
+
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-textfield-decoration-container {
+  display: none !important;
 }
